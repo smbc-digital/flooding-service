@@ -1,16 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using flooding_service.Utils.HealthChecks;
 using flooding_service.Utils.ServiceCollectionExtensions;
-using flooding_service.Utils.StorageProvider;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using StockportGovUK.AspNetCore.Availability;
-using StockportGovUK.AspNetCore.Availability.Middleware;
-using StockportGovUK.NetStandard.Gateways;
-using StockportGovUK.NetStandard.Gateways.Extensions;
+using StockportGovUK.AspNetCore.Middleware;
 
 namespace flooding_service
 {
@@ -28,9 +24,9 @@ namespace flooding_service
         {
             services.AddControllers()
                     .AddNewtonsoftJson();
-            services.AddStorageProvider(Configuration);
-            services.AddHttpClient<IGateway, Gateway>(Configuration, "IGatewayConfig");
-            services.AddAvailability();
+
+            services.AddGateways(Configuration);
+
             services.AddSwagger();
             services.AddHealthChecks()
                     .AddCheck<TestHealthCheck>("TestHealthCheck");
@@ -40,14 +36,12 @@ namespace flooding_service
         {
             app.UseExceptionHandler($"/api/v1/error{(env.IsDevelopment() ? "/local" : string.Empty)}");
 
-            app.UseMiddleware<Availability>();
-
             app.UseHttpsRedirection();
-
             app.UseRouting();
-            
             app.UseEndpoints(endpoints => endpoints.MapControllers());
-            
+
+            app.UseMiddleware<ApiExceptionHandling>();
+
             app.UseHealthChecks("/healthcheck", HealthCheckConfig.Options);
 
             app.UseSwagger();
