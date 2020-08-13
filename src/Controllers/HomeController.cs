@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using StockportGovUK.AspNetCore.Attributes.TokenAuthentication;
 
 namespace flooding_service.Controllers
@@ -9,13 +10,16 @@ namespace flooding_service.Controllers
     [TokenAuthentication]
     public class HomeController : ControllerBase
     {
-        public HomeController()
+        private readonly ILogger<HomeController> _logger;
+        public HomeController(ILogger<HomeController> logger)
         {
+            _logger =logger;
         }
 
         [HttpPost]
         public IActionResult Post()
         {
+            _logger.LogError("DEBUG: logging test");
             return Ok();
         }
     }

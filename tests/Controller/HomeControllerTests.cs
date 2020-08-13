@@ -1,5 +1,6 @@
 using flooding_service.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -8,10 +9,11 @@ namespace flooding_service_tests.Controllers
     public class HomeControllerTests
     {
         private readonly HomeController _homeController;
-
+        private readonly Mock<ILogger<HomeController>> _logger = new Mock<ILogger<HomeController>>();
+        
         public HomeControllerTests()
         {
-            _homeController = new HomeController();
+            _homeController = new HomeController(_logger.Object);
         }
         
         [Fact]
