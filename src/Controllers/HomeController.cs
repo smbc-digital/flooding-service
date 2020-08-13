@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using StockportGovUK.AspNetCore.Attributes.TokenAuthentication;
-using StockportGovUK.AspNetCore.Availability.Managers;
 
 namespace flooding_service.Controllers
 {
@@ -10,17 +9,8 @@ namespace flooding_service.Controllers
     [TokenAuthentication]
     public class HomeController : ControllerBase
     {
-        private IAvailabilityManager _availabilityManager;
-        
-        public HomeController(IAvailabilityManager availabilityManager)
+        public HomeController()
         {
-            _availabilityManager = availabilityManager;
-        }
-
-        [HttpGet]
-        public IActionResult Get()
-        {
-            return Ok();
         }
 
         [HttpPost]
