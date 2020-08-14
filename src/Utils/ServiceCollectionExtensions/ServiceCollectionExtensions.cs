@@ -20,7 +20,7 @@ namespace flooding_service.Utils.ServiceCollectionExtensions
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "flooding_service API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Flooding Service API", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",

@@ -1,18 +1,18 @@
-<h1 align="center">Service name</h1>
+<h1 align="center">Flooding Service</h1>
 
 <div align="center">
-  :neckbeard: :books: :office:
+  :sweat_drops: :ocean: :fish:
 </div>
 <div align="center">
-  Service tag line
+  Let your kindness flood the world
 </div>
 
 <br />
 
 <div align="center">
   <img alt="Application version" src="https://img.shields.io/badge/version-1.0.0-brightgreen.svg?style=flat-square" />
-  <img alt="Open Issues" src="https://img.shields.io/github/issues/smbc-digital/{service-name}">
-    <img alt="Stars" src="https://img.shields.io/github/stars/smbc-digital/{service-name}">
+  <img alt="Open Issues" src="https://img.shields.io/github/issues/smbc-digital/flooding-service">
+    <img alt="Stars" src="https://img.shields.io/github/stars/smbc-digital/flooding-service">
   <img alt="Stability for application" src="https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square" />
 </div>
 
@@ -44,12 +44,16 @@
 - [License](#license)
 
 ## Requirements
-
+- .Net Core 3.
+- GPG Key added to contributors
 
 ## Installation
-
-
-## Server_Integration
+```
+$ git clone git@github.com:smbc-digital/flooding-service.git
+$ cd flooding-service/src
+$ git-crypt unlock
+$ dotnet run
+```
 
 
 ## License

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using StockportGovUK.AspNetCore.Middleware;
 
 namespace flooding_service
 {
@@ -40,14 +39,12 @@ namespace flooding_service
             app.UseRouting();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
 
-            app.UseMiddleware<ApiExceptionHandling>();
-
             app.UseHealthChecks("/healthcheck", HealthCheckConfig.Options);
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("v1/swagger.json", "flooding_service API");
+                c.SwaggerEndpoint("v1/swagger.json", "Flooding Service API");
             });
         }
     }
