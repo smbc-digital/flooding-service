@@ -9,11 +9,8 @@ namespace flooding_service_tests.Controllers
     public class HomeControllerTests
     {
         private readonly HomeController _homeController;
-        private readonly Mock<ILogger<HomeController>> _logger = new Mock<ILogger<HomeController>>();
-        
         public HomeControllerTests()
         {
-            _homeController = new HomeController(_logger.Object);
         }
         
         [Fact]

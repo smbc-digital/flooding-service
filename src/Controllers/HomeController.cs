@@ -10,16 +10,13 @@ namespace flooding_service.Controllers
     [TokenAuthentication]
     public class HomeController : ControllerBase
     {
-        private readonly ILogger<HomeController> _logger;
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController()
         {
-            _logger =logger;
         }
 
         [HttpPost]
         public IActionResult Post()
-        {
-            _logger.LogError("DEBUG: logging test");
+        {         
             return Ok();
         }
     }
