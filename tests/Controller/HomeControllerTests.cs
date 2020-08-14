@@ -11,6 +11,7 @@ namespace flooding_service_tests.Controllers
         private readonly HomeController _homeController;
         public HomeControllerTests()
         {
+            _homeController = new HomeController();
         }
         
         [Fact]
