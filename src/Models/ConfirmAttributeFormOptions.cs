@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using StockportGovUK.NetStandard.Extensions.VerintExtensions.VerintOnlineFormsExtensions.ConfirmIntegrationFromExtensions;
 
 namespace flooding_service.Models
 {
-    public class ConfirmAttributeFormOptions : ConfirmIntegrationFormOptions
+    public class ConfirmAttributeFormOptions
     {
         public const string ConfigValue = "ConfirmAttributeFormOptions";
 

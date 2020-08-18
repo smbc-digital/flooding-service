@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
 using flooding_service.Mappers;
@@ -22,7 +21,6 @@ namespace flooding_service.Services
         private readonly IVerintServiceGateway _verintServiceGateway;
         private readonly IMailingServiceGateway _mailingServiceGateway;
         private readonly PavementVerintOptions _pavementVerintOptions;
-        private readonly ConfirmIntegrationFormOptions _confirmIntegrationFormOptions;
         private readonly ConfirmAttributeFormOptions _confirmAttributeFormOptions;
 
         public FloodingService(IVerintServiceGateway verintServiceGateway, IMailingServiceGateway mailingServiceGateway, PavementVerintOptions pavementVerintOptions, ConfirmAttributeFormOptions confirmAttributeFormOptions)
@@ -36,23 +34,9 @@ namespace flooding_service.Services
         public async Task<string> CreateCase(FloodingRequest request)
         {
             var crmCase = request.ToCase(_pavementVerintOptions, _confirmAttributeFormOptions);
+            var confirmIntegrationFormOptions = request.ToConfirmFormOptions(_confirmAttributeFormOptions);
 
-            var verintRequest = crmCase.ToConfirmIntegrationFormCase(_confirmIntegrationFormOptions);
-
-            if (!string.IsNullOrEmpty(request.WhereIsTheFloodingComingFrom))
-            {
-                var config =
-                    _confirmAttributeFormOptions.RiverOrCulvertedWaterConfig.FirstOrDefault(_ =>
-                        _.Type.Equals(request.WhereIsTheFloodingComingFrom));
-                verintRequest.FormData.Add(config.Code, config.Value);
-            }
-
-            if (!string.IsNullOrEmpty(request.Map.Lat) && !string.IsNullOrEmpty(request.Map.Lng))
-            {
-                verintRequest.FormData.Add("CONF_X_COORD", request.Map.Lat);
-                verintRequest.FormData.Add("CONF_Y_COORD", request.Map.Lng);
-            }
-
+            var verintRequest = crmCase.ToConfirmIntegrationFormCase(confirmIntegrationFormOptions);
             var caseResult = await _verintServiceGateway.CreateVerintOnlineFormCase(verintRequest);
 
             await _mailingServiceGateway.Send(new Mail

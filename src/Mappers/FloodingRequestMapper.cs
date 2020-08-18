@@ -28,10 +28,10 @@ namespace flooding_service.Mappers
                 AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Street
             };
 
-            if (floodingRequest.Map != null && string.IsNullOrEmpty(floodingRequest.Map.Street))
+            if (!floodingRequest.DidNotUseMap)
             {
-                crmCase.Street.USRN = "99999999";
-                crmCase.Street.Description = "No street reference found";
+                crmCase.Street.USRN = ConfirmConstants.USRN;
+                crmCase.Street.Description = ConfirmConstants.Description;
             }
             else
             {

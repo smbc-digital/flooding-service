@@ -12,6 +12,8 @@ namespace flooding_service.Controllers.Models
         public string TellUsABoutTheFlood { get; set; }
         public ContactDetails Reporter { get; set; }
         public string HowWouldYouLikeToBeContacted { get; set; }
+
+        public bool DidNotUseMap => WhereIsTheFlood.Equals("home") || WhereIsTheFlood.Equals("business");
     }
 
     public class Map

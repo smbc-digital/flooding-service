@@ -29,7 +29,7 @@ namespace flooding_service.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return StatusCode(500);
             }
         }
     }
