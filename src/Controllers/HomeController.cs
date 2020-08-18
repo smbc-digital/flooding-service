@@ -1,3 +1,4 @@
+using System;
 using flooding_service.Controllers.Models;
 using flooding_service.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +21,16 @@ namespace flooding_service.Controllers
 
         [HttpPost]
         public IActionResult Post([FromBody] FloodingRequest model)
-        {         
-            var result = _floodingService.CreateCase(model);
-            return Ok();
+        {
+            try
+            {
+                var result = _floodingService.CreateCase(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text;
 using flooding_service.Controllers.Models;
 using flooding_service.Models;
@@ -8,11 +9,11 @@ namespace flooding_service.Mappers
 {   
     public static class FloodingRequestMapper
     {
-        public static Case ToCase(this FloodingRequest floodingRequest, PavementVerintOptions verintOptions)
+        public static Case ToCase(this FloodingRequest floodingRequest, PavementVerintOptions verintOptions, ConfirmAttributeFormOptions confirmAttributeFormOptions)
         {
             var crmCase = new Case
             {
-                EventCode = verintOptions.EventCode,
+                EventCode = int.Parse(confirmAttributeFormOptions.EventId.FirstOrDefault(_ => _.Type.Equals(floodingRequest.WhereIsTheFlood)).Value),
                 Classification = verintOptions.Classification,
                 EventTitle = verintOptions.EventTitle,
                 Customer = new Customer 
@@ -26,6 +27,18 @@ namespace flooding_service.Mappers
                 RaisedByBehaviour = RaisedByBehaviourEnum.Individual,
                 AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Street
             };
+
+            if (floodingRequest.Map != null && string.IsNullOrEmpty(floodingRequest.Map.Street))
+            {
+                crmCase.Street.USRN = "99999999";
+                crmCase.Street.Description = "No street reference found";
+            }
+            else
+            {
+                var street = floodingRequest.Map?.Street.Split(',').ToList();
+                crmCase.Street.USRN = street.Last();
+                crmCase.Street.Description = street.SkipLast(1).ToString();
+            }
 
             return crmCase;
         }
