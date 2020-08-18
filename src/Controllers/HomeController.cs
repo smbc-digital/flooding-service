@@ -1,5 +1,6 @@
+using flooding_service.Controllers.Models;
+using flooding_service.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using StockportGovUK.AspNetCore.Attributes.TokenAuthentication;
 
 namespace flooding_service.Controllers
@@ -10,13 +11,17 @@ namespace flooding_service.Controllers
     [TokenAuthentication]
     public class HomeController : ControllerBase
     {
-        public HomeController()
+        private readonly IFloodingService _floodingService;
+
+        public HomeController(IFloodingService floodingService)
         {
+            _floodingService = floodingService;
         }
 
         [HttpPost]
-        public IActionResult Post()
+        public IActionResult Post([FromBody] FloodingRequest model)
         {         
+            var result = _floodingService.CreateCase(model);
             return Ok();
         }
     }

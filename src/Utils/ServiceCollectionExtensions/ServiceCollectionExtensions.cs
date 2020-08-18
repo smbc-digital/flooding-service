@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using StockportGovUK.NetStandard.Gateways.VerintService;
 using StockportGovUK.NetStandard.Gateways.Extensions;
 using StockportGovUK.NetStandard.Gateways.MailingService;
+using flooding_service.Services;
 
 namespace flooding_service.Utils.ServiceCollectionExtensions
 {
@@ -14,6 +15,13 @@ namespace flooding_service.Utils.ServiceCollectionExtensions
         {
             services.AddHttpClient<IVerintServiceGateway, VerintServiceGateway>(configuration);
             services.AddHttpClient<IMailingServiceGateway, MailingServiceGateway>(configuration);
+
+            return services;
+        }
+
+        public static IServiceCollection AddServices(this IServiceCollection services)
+        {
+            services.AddSingleton<IFloodingService, FloodingService>();
 
             return services;
         }
