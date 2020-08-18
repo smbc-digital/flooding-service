@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using flooding_service.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -22,6 +23,14 @@ namespace flooding_service.Utils.ServiceCollectionExtensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddSingleton<IFloodingService, FloodingService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddIOptions(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<PavementVerintOptions>(configuration.GetSection(PavementVerintOptions.ConfigValue));
+            services.Configure<ConfirmAttributeFormOptions>(configuration.GetSection(ConfirmAttributeFormOptions.ConfigValue));
 
             return services;
         }

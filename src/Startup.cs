@@ -25,7 +25,8 @@ namespace flooding_service
                     .AddNewtonsoftJson();
 
             services.AddGateways(Configuration)
-                    .AddServices();
+                    .AddServices()
+                    .AddIOptions(Configuration);
 
             services.AddSwagger();
             services.AddHealthChecks()

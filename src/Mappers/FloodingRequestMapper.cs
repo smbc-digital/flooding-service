@@ -1,19 +1,20 @@
 using System;
 using System.Text;
 using flooding_service.Controllers.Models;
+using flooding_service.Models;
 using StockportGovUK.NetStandard.Models.Verint;
 
 namespace flooding_service.Mappers
 {   
     public static class FloodingRequestMapper
     {
-        public static FloodingRequest ToCase(this FloodingRequest floodingRequest)
+        public static Case ToCase(this FloodingRequest floodingRequest, PavementVerintOptions verintOptions)
         {
             var crmCase = new Case
             {
-                EventCode = 11,
-                Classification = "",
-                EventTitle = "",
+                EventCode = verintOptions.EventCode,
+                Classification = verintOptions.Classification,
+                EventTitle = verintOptions.EventTitle,
                 Customer = new Customer 
                 {
                     Forename = floodingRequest.Reporter.FirstName,
@@ -21,10 +22,12 @@ namespace flooding_service.Mappers
                     Email = floodingRequest.Reporter.EmailAddress,
                     Telephone = floodingRequest.Reporter.PhoneNumber
                 },
-                Description = DescriptionBuilder(floodingRequest)
+                Description = DescriptionBuilder(floodingRequest),
+                RaisedByBehaviour = RaisedByBehaviourEnum.Individual,
+                AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Street
             };
 
-            return floodingRequest;
+            return crmCase;
         }
 
         private static string DescriptionBuilder(FloodingRequest floodingRequest) 
