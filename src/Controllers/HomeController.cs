@@ -15,9 +15,9 @@ namespace flooding_service.Controllers
     public class HomeController : ControllerBase
     {
         private readonly IFloodingService _floodingService;
-        private readonly ILogger _logger;
+        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(IFloodingService floodingService, ILogger logger)
+        public HomeController(IFloodingService floodingService, ILogger<HomeController> logger)
         {
             _floodingService = floodingService;
             _logger = logger;
