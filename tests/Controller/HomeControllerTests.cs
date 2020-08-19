@@ -4,6 +4,7 @@ using flooding_service.Controllers;
 using flooding_service.Controllers.Models;
 using flooding_service.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -13,9 +14,10 @@ namespace flooding_service_tests.Controllers
     {
         private readonly HomeController _homeController;
         private readonly Mock<IFloodingService> _mockFloodingService = new Mock<IFloodingService>();
+        private readonly Mock<ILogger> _mockLogger = new Mock<ILogger>();
         public HomeControllerTests()
         {
-            _homeController = new HomeController(_mockFloodingService.Object);
+            _homeController = new HomeController(_mockFloodingService.Object, _mockLogger.Object);
         }
         
         [Fact]
@@ -52,11 +54,11 @@ namespace flooding_service_tests.Controllers
             // Arrange
             _mockFloodingService
                 .Setup(_ => _.CreateCase(It.IsAny<FloodingRequest>()))
-                .Throws(new Exception());
+                .Throws(new Exception("Error"));
 
             // Act
             var response = await _homeController.Post(new FloodingRequest());
-            var statusResponse = response as StatusCodeResult;
+            var statusResponse = response as ObjectResult;
 
             // Assert
             Assert.Equal(500, statusResponse.StatusCode);

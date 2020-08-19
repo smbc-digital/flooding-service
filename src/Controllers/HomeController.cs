@@ -1,7 +1,9 @@
+using System;
 using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
 using flooding_service.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using StockportGovUK.AspNetCore.Attributes.TokenAuthentication;
 
 namespace flooding_service.Controllers
@@ -13,10 +15,12 @@ namespace flooding_service.Controllers
     public class HomeController : ControllerBase
     {
         private readonly IFloodingService _floodingService;
+        private readonly ILogger _logger;
 
-        public HomeController(IFloodingService floodingService)
+        public HomeController(IFloodingService floodingService, ILogger logger)
         {
             _floodingService = floodingService;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -27,9 +31,10 @@ namespace flooding_service.Controllers
                 var result = await _floodingService.CreateCase(model);
                 return Ok(result);
             }
-            catch
+            catch (Exception ex)
             {
-                return StatusCode(500);
+                _logger.LogError($"FloodingService:: Post:: Error message: {ex.Message}");
+                return StatusCode(500, ex.Message);
             }
         }
     }
