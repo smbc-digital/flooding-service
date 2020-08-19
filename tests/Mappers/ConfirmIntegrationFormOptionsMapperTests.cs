@@ -14,6 +14,19 @@ namespace flooding_service_tests.Mappers
         {
             _confirmAttributeFormOptions = new ConfirmAttributeFormOptions
             {
+                EventId = new List<Config>
+                {
+                    new Config
+                    {
+                        Type = "pavement",
+                        Value = "2002592"
+                    },
+                    new Config
+                    {
+                        Type = "home",
+                        Value = "0013254"
+                    }
+                },
                 RiverOrCulvertedWaterConfig = new List<Config>
                 {
                     new Config
