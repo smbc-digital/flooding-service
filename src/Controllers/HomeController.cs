@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
 using flooding_service.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +21,12 @@ namespace flooding_service.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] FloodingRequest model)
+        public async Task<IActionResult> Post([FromBody] FloodingRequest model)
         {
             try
             {
-                var result = _floodingService.CreateCase(model);
-                return Ok();
+                var result = await _floodingService.CreateCase(model);
+                return Ok(result);
             }
             catch (Exception ex)
             {

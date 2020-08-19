@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
 using flooding_service.Mappers;
@@ -24,7 +25,10 @@ namespace flooding_service.Services
         private readonly IOptions<PavementVerintOptions> _pavementVerintOptions;
         private readonly IOptions<ConfirmAttributeFormOptions> _confirmAttributeFormOptions;
 
-        public FloodingService(IVerintServiceGateway verintServiceGateway, IMailingServiceGateway mailingServiceGateway, IOptions<PavementVerintOptions> pavementVerintOptions, IOptions<ConfirmAttributeFormOptions> confirmAttributeFormOptions)
+        public FloodingService(IVerintServiceGateway verintServiceGateway,
+                                IMailingServiceGateway mailingServiceGateway,
+                                IOptions<PavementVerintOptions> pavementVerintOptions,
+                                IOptions<ConfirmAttributeFormOptions> confirmAttributeFormOptions)
         {
             _verintServiceGateway = verintServiceGateway;
             _mailingServiceGateway = mailingServiceGateway;
@@ -34,24 +38,30 @@ namespace flooding_service.Services
 
         public async Task<string> CreateCase(FloodingRequest request)
         {
-            var crmCase = request.ToCase(_pavementVerintOptions.Value, _confirmAttributeFormOptions.Value);
-            var confirmIntegrationFormOptions = request.ToConfirmFormOptions(_confirmAttributeFormOptions.Value);
-
-            var verintRequest = crmCase.ToConfirmIntegrationFormCase(confirmIntegrationFormOptions);
-            var caseResult = await _verintServiceGateway.CreateVerintOnlineFormCase(verintRequest);
-
-            await _mailingServiceGateway.Send(new Mail
+            try
             {
-                Payload = JsonConvert.SerializeObject(new
-                {
-                    Subject = "Report a flood - submission",
-                    Reference = caseResult.ResponseContent.VerintCaseReference,
-                    RecipientAddress = request.Reporter.EmailAddress
-                }),
-                Template = EMailTemplate.ReportAFloodPublicSpaces
-            });
+                var crmCase = request.ToCase(_pavementVerintOptions.Value, _confirmAttributeFormOptions.Value);
+                var confirmIntegrationFormOptions = request.ToConfirmFormOptions(_confirmAttributeFormOptions.Value);
+                var verintRequest = crmCase.ToConfirmIntegrationFormCase(confirmIntegrationFormOptions);
+                var caseResult = await _verintServiceGateway.CreateVerintOnlineFormCase(verintRequest);
 
-            return caseResult.ResponseContent.VerintCaseReference;
+                await _mailingServiceGateway.Send(new Mail
+                {
+                    Payload = JsonConvert.SerializeObject(new
+                    {
+                        Subject = "Report a flood - submission",
+                        Reference = caseResult.ResponseContent.VerintCaseReference,
+                        RecipientAddress = request.Reporter.EmailAddress
+                    }),
+                    Template = EMailTemplate.ReportAFloodPublicSpaces
+                });
+
+                return caseResult.ResponseContent.VerintCaseReference;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"FloodingService:: CreateCase, Failed to create case, exception: {ex.Message}");
+            }
         }
     }
 }

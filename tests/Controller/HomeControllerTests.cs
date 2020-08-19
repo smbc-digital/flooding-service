@@ -1,10 +1,11 @@
 using System;
+using System.Threading.Tasks;
 using flooding_service.Controllers;
 using flooding_service.Controllers.Models;
 using flooding_service.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using StockportGovUK.NetStandard.Models.ContactDetails;
+using StockportGovUK.NetStandard.Gateways.Response;
 using Xunit;
 
 namespace flooding_service_tests.Controllers
@@ -19,11 +20,16 @@ namespace flooding_service_tests.Controllers
         }
         
         [Fact]
-        public void Post_ShouldReturnOK()
+        public async Task Post_ShouldReturnOK()
         {
+            // Arrange
+            _mockFloodingService
+                .Setup(_ => _.CreateCase(It.IsAny<FloodingRequest>()))
+                .ReturnsAsync("test ref");
+
             // Act
-            var response = _homeController.Post(new FloodingRequest());
-            var statusResponse = response as OkResult;
+            var response = await _homeController.Post(new FloodingRequest());
+            var statusResponse = response as OkObjectResult;
             
             // Assert
             Assert.NotNull(statusResponse);
@@ -31,10 +37,10 @@ namespace flooding_service_tests.Controllers
         }
 
         [Fact]
-        public void Post_ShouldCreateCase()
+        public async Task Post_ShouldCreateCase()
         {
             // Act
-            _homeController.Post(new FloodingRequest());
+            await _homeController.Post(new FloodingRequest());
 
             // Assert
             _mockFloodingService.Verify(_ => _.CreateCase(It.IsAny<FloodingRequest>()), Times.Once);
@@ -42,7 +48,7 @@ namespace flooding_service_tests.Controllers
 
 
         [Fact]
-        public void Post_ShouldReturn500()
+        public async Task Post_ShouldReturn500()
         {
             // Arrange
             _mockFloodingService
@@ -50,7 +56,7 @@ namespace flooding_service_tests.Controllers
                 .Throws(new Exception());
 
             // Act
-            var response = _homeController.Post(new FloodingRequest());
+            var response = await _homeController.Post(new FloodingRequest());
             var statusResponse = response as StatusCodeResult;
 
             // Assert
