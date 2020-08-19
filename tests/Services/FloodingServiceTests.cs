@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
 using flooding_service.Models;
 using flooding_service.Services;
+using Microsoft.Extensions.Options;
 using Moq;
 using StockportGovUK.NetStandard.Gateways.MailingService;
 using StockportGovUK.NetStandard.Gateways.Response;
@@ -45,34 +46,39 @@ namespace flooding_service_tests.Services
 
         public FloodingServiceTests()
         {
-            var mockConfirmAttributeFormOptions = new ConfirmAttributeFormOptions
-            {
-                EventId = new List<Config>
+            var mockConfirmAttributeFromOptions = new Mock<IOptions<ConfirmAttributeFormOptions>>();
+            mockConfirmAttributeFromOptions
+                .SetupGet(_ => _.Value)
+                .Returns(new ConfirmAttributeFormOptions
                 {
-                    new Config
+                    EventId = new List<Config>
                     {
-                        Value = "123456",
-                        Code = "testCode",
-                        Type = "pavement"
-                    }
-                },
-                RiverOrCulvertedWaterConfig = new List<Config>
-                {
-                    new Config
+                        new Config
+                        {
+                            Value = "123456",
+                            Code = "testCode",
+                            Type = "pavement"
+                        }
+                    },
+                    RiverOrCulvertedWaterConfig = new List<Config>
                     {
-                        Value = "riv",
-                        Code = "testCode",
-                        Type = "river"
+                        new Config
+                        {
+                            Value = "riv",
+                            Code = "testCode",
+                            Type = "river"
+                        }
                     }
-                }
-            };
+                });
 
-            var mockPavementVerintOptions = new PavementVerintOptions
-            {
-                EventCode = 123456,
-                Classification = "test",
-                EventTitle = "test"
-            };
+            var mockPavementVerintOptions = new Mock<IOptions<PavementVerintOptions>>();
+            mockPavementVerintOptions
+                .SetupGet(_ => _.Value)
+                .Returns(new PavementVerintOptions
+                {
+                    Classification = "Test Classification",
+                    EventTitle = "Test Event Title"
+                });
 
             _mockVerintServiceGateway
                 .Setup(_ => _.CreateVerintOnlineFormCase(It.IsAny<VerintOnlineFormRequest>()))
@@ -95,8 +101,8 @@ namespace flooding_service_tests.Services
             _floodingService = new FloodingService(
                 _mockVerintServiceGateway.Object,
                 _mockMailingServiceGateway.Object,
-                mockPavementVerintOptions,
-                mockConfirmAttributeFormOptions);
+                mockPavementVerintOptions.Object,
+                mockConfirmAttributeFromOptions.Object);
         }
 
         [Fact]

@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
 using flooding_service.Mappers;
 using flooding_service.Models;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using StockportGovUK.NetStandard.Extensions.VerintExtensions.VerintOnlineFormsExtensions.ConfirmIntegrationFromExtensions;
 using StockportGovUK.NetStandard.Gateways.MailingService;
@@ -20,10 +21,10 @@ namespace flooding_service.Services
     {
         private readonly IVerintServiceGateway _verintServiceGateway;
         private readonly IMailingServiceGateway _mailingServiceGateway;
-        private readonly PavementVerintOptions _pavementVerintOptions;
-        private readonly ConfirmAttributeFormOptions _confirmAttributeFormOptions;
+        private readonly IOptions<PavementVerintOptions> _pavementVerintOptions;
+        private readonly IOptions<ConfirmAttributeFormOptions> _confirmAttributeFormOptions;
 
-        public FloodingService(IVerintServiceGateway verintServiceGateway, IMailingServiceGateway mailingServiceGateway, PavementVerintOptions pavementVerintOptions, ConfirmAttributeFormOptions confirmAttributeFormOptions)
+        public FloodingService(IVerintServiceGateway verintServiceGateway, IMailingServiceGateway mailingServiceGateway, IOptions<PavementVerintOptions> pavementVerintOptions, IOptions<ConfirmAttributeFormOptions> confirmAttributeFormOptions)
         {
             _verintServiceGateway = verintServiceGateway;
             _mailingServiceGateway = mailingServiceGateway;
@@ -33,8 +34,8 @@ namespace flooding_service.Services
 
         public async Task<string> CreateCase(FloodingRequest request)
         {
-            var crmCase = request.ToCase(_pavementVerintOptions, _confirmAttributeFormOptions);
-            var confirmIntegrationFormOptions = request.ToConfirmFormOptions(_confirmAttributeFormOptions);
+            var crmCase = request.ToCase(_pavementVerintOptions.Value, _confirmAttributeFormOptions.Value);
+            var confirmIntegrationFormOptions = request.ToConfirmFormOptions(_confirmAttributeFormOptions.Value);
 
             var verintRequest = crmCase.ToConfirmIntegrationFormCase(confirmIntegrationFormOptions);
             var caseResult = await _verintServiceGateway.CreateVerintOnlineFormCase(verintRequest);
