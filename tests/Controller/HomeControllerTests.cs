@@ -5,7 +5,6 @@ using flooding_service.Controllers.Models;
 using flooding_service.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using StockportGovUK.NetStandard.Gateways.Response;
 using Xunit;
 
 namespace flooding_service_tests.Controllers

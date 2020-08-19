@@ -4,7 +4,7 @@ using flooding_service.Models;
 using StockportGovUK.NetStandard.Extensions.VerintExtensions.VerintOnlineFormsExtensions.ConfirmIntegrationFromExtensions;
 
 namespace flooding_service.Mappers
-{   
+{
     public static class ConfirmIntegrationFormOptionsMapper
     {
         public static ConfirmIntegrationFormOptions ToConfirmFormOptions(this FloodingRequest request, ConfirmAttributeFormOptions attributesFormOptions)

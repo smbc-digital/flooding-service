@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using flooding_service.Models;
+using flooding_service.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using StockportGovUK.NetStandard.Gateways.VerintService;
 using StockportGovUK.NetStandard.Gateways.Extensions;
 using StockportGovUK.NetStandard.Gateways.MailingService;
-using flooding_service.Services;
+using StockportGovUK.NetStandard.Gateways.VerintService;
 
 namespace flooding_service.Utils.ServiceCollectionExtensions
 {

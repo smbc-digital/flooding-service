@@ -7,7 +7,7 @@ using flooding_service.Models;
 using StockportGovUK.NetStandard.Models.Verint;
 
 namespace flooding_service.Mappers
-{   
+{
     public static class FloodingRequestMapper
     {
         public static Case ToCase(this FloodingRequest floodingRequest, PavementVerintOptions verintOptions, ConfirmAttributeFormOptions confirmAttributeFormOptions)
