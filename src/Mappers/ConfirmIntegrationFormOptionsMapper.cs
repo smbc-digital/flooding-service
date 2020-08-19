@@ -13,7 +13,7 @@ namespace flooding_service.Mappers
 
             formOptions.FloodingSourceReported = attributesFormOptions.RiverOrCulvertedWaterConfig.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFloodingComingFrom)).Value ?? string.Empty;
 
-            if(!request.DidNotUseMap)
+            if (!request.DidNotUseMap)
             {
                 formOptions.XCoordinate = request.Map.Lng;
                 formOptions.YCoordinate = request.Map.Lat;
