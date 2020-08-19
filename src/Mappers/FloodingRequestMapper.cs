@@ -15,6 +15,7 @@ namespace flooding_service.Mappers
             var crmCase = new Case
             {
                 EventCode = int.Parse(confirmAttributeFormOptions.EventId.FirstOrDefault(_ => _.Type.Equals(floodingRequest.WhereIsTheFlood)).Value),
+                EventId = confirmAttributeFormOptions.EventId.FirstOrDefault(_ => _.Type.Equals(floodingRequest.WhereIsTheFlood)).Value,
                 Classification = verintOptions.Classification,
                 EventTitle = verintOptions.EventTitle,
                 Customer = new Customer 
