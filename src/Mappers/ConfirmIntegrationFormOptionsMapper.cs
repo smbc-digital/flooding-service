@@ -12,8 +12,10 @@ namespace flooding_service.Mappers
             var formOptions = new ConfirmIntegrationFormOptions();
 
             formOptions.FloodingSourceReported = attributesFormOptions.RiverOrCulvertedWaterConfig.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFloodingComingFrom)).Value ?? string.Empty;
-            formOptions.EventId =
-                int.Parse(attributesFormOptions.EventId.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFlood)).Value);
+            formOptions.EventId = int.Parse(attributesFormOptions.EventId.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFlood)).Value);
+            formOptions.ClassCode = attributesFormOptions.ClassCode;
+            formOptions.ServiceCode = attributesFormOptions.ServiceCode.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFlood)).Value;
+            formOptions.SubjectCode = attributesFormOptions.SubjectCode.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFlood)).Value;
 
             if (!request.DidNotUseMap)
             {

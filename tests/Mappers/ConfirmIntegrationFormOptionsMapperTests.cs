@@ -27,6 +27,33 @@ namespace flooding_service_tests.Mappers
                         Value = "0013254"
                     }
                 },
+                ServiceCode = new List<Config>
+                {
+                    new Config
+                    {
+                        Type = "pavement",
+                        Value = "HWAY"
+                    },
+                    new Config
+                    {
+                        Type = "home",
+                        Value = "HWAY"
+                    }
+                },
+                SubjectCode = new List<Config>
+                {
+                    new Config
+                    {
+                        Type = "pavement",
+                        Value = "CWFD"
+                    },
+                    new Config
+                    {
+                        Type = "home",
+                        Value = "CWFD"
+                    }
+                },
+                ClassCode = "SERV",
                 RiverOrCulvertedWaterConfig = new List<Config>
                 {
                     new Config
