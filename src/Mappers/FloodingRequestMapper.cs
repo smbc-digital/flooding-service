@@ -28,16 +28,22 @@ namespace flooding_service.Mappers
                 AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Street
             };
 
-            if (!floodingRequest.DidNotUseMap)
+            if (floodingRequest.DidNotUseMap)
             {
-                crmCase.Street.USRN = ConfirmConstants.USRN;
-                crmCase.Street.Description = ConfirmConstants.Description;
+                crmCase.Street = new Street
+                {
+                    USRN = ConfirmConstants.USRN,
+                    Description = ConfirmConstants.Description
+                };
             }
             else
             {
                 var street = floodingRequest.Map?.Street.Split(',').ToList();
-                crmCase.Street.USRN = street.Last();
-                crmCase.Street.Description = street.SkipLast(1).ToString();
+                crmCase.Street = new Street
+                {
+                    USRN = street.Last().Trim(),
+                    Description = street.SkipLast(1).Aggregate("",(x,y) => x + y + ',').Trim(',')
+                };
             }
 
             return crmCase;
