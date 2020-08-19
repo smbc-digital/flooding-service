@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using flooding_service.Models;
+using flooding_service.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using StockportGovUK.NetStandard.Gateways.VerintService;
 using StockportGovUK.NetStandard.Gateways.Extensions;
 using StockportGovUK.NetStandard.Gateways.MailingService;
+using StockportGovUK.NetStandard.Gateways.VerintService;
 
 namespace flooding_service.Utils.ServiceCollectionExtensions
 {
@@ -14,6 +16,21 @@ namespace flooding_service.Utils.ServiceCollectionExtensions
         {
             services.AddHttpClient<IVerintServiceGateway, VerintServiceGateway>(configuration);
             services.AddHttpClient<IMailingServiceGateway, MailingServiceGateway>(configuration);
+
+            return services;
+        }
+
+        public static IServiceCollection AddServices(this IServiceCollection services)
+        {
+            services.AddSingleton<IFloodingService, FloodingService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddIOptions(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<PavementVerintOptions>(configuration.GetSection(PavementVerintOptions.ConfigValue));
+            services.Configure<ConfirmAttributeFormOptions>(configuration.GetSection(ConfirmAttributeFormOptions.ConfigValue));
 
             return services;
         }
