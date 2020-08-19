@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
 using flooding_service.Services;
@@ -28,7 +27,7 @@ namespace flooding_service.Controllers
                 var result = await _floodingService.CreateCase(model);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch
             {
                 return StatusCode(500);
             }

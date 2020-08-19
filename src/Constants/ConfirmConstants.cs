@@ -1,4 +1,4 @@
-namespace flooding_service.Models
+namespace flooding_service.Constants
 {
     public class ConfirmConstants
     {
