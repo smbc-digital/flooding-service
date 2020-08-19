@@ -9,6 +9,12 @@ namespace flooding_service.Models
         public List<Config> RiverOrCulvertedWaterConfig { get; set; }
 
         public List<Config> EventId { get; set; }
+
+        public List<Config> ServiceCode { get; set; }
+
+        public List<Config> SubjectCode { get; set; }
+
+        public string ClassCode { get; set; }
     }
 
     public class Config

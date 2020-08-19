@@ -68,7 +68,24 @@ namespace flooding_service_tests.Services
                             Code = "testCode",
                             Type = "river"
                         }
-                    }
+                    },
+                    ServiceCode = new List<Config>
+                    {
+                        new Config
+                        {
+                            Type = "pavement",
+                            Value = "HWAY"
+                        }
+                    },
+                    SubjectCode = new List<Config>
+                    {
+                        new Config
+                        {
+                            Type = "pavement",
+                            Value = "CWFD"
+                        }
+                    },
+                    ClassCode = "SERV",
                 });
 
             var mockPavementVerintOptions = new Mock<IOptions<PavementVerintOptions>>();
