@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
 using flooding_service.Models;
 using flooding_service.Services;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using StockportGovUK.NetStandard.Gateways.MailingService;
 using StockportGovUK.NetStandard.Gateways.Response;
 using StockportGovUK.NetStandard.Gateways.VerintService;
+using StockportGovUK.NetStandard.Models.Addresses;
 using StockportGovUK.NetStandard.Models.ContactDetails;
 using StockportGovUK.NetStandard.Models.Mail;
 using StockportGovUK.NetStandard.Models.Models.Verint.VerintOnlineForm;
@@ -21,6 +23,7 @@ namespace flooding_service_tests.Services
         private readonly FloodingService _floodingService;
         private readonly Mock<IVerintServiceGateway> _mockVerintServiceGateway = new Mock<IVerintServiceGateway>();
         private readonly Mock<IMailingServiceGateway> _mockMailingServiceGateway = new Mock<IMailingServiceGateway>();
+        private readonly Mock<ILogger<FloodingService>> _mockLogger = new Mock<ILogger<FloodingService>>();
         private readonly FloodingRequest _floodingRequest = new FloodingRequest
         {
             HowWouldYouLikeToBeContacted = "phone",
@@ -115,11 +118,16 @@ namespace flooding_service_tests.Services
                     ResponseContent = "test"
                 });
 
+            _mockVerintServiceGateway
+                .Setup(_ => _.GetStreetByReference(It.IsAny<string>()))
+                .ReturnsAsync(new HttpResponse<List<AddressSearchResult>>());
+
             _floodingService = new FloodingService(
                 _mockVerintServiceGateway.Object,
                 _mockMailingServiceGateway.Object,
                 mockPavementVerintOptions.Object,
-                mockConfirmAttributeFromOptions.Object);
+                mockConfirmAttributeFromOptions.Object,
+                _mockLogger.Object);
         }
 
         [Fact]

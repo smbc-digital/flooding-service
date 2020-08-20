@@ -3,6 +3,8 @@ using flooding_service.Constants;
 using flooding_service.Controllers.Models;
 using flooding_service.Mappers;
 using flooding_service.Models;
+using Moq;
+using StockportGovUK.NetStandard.Models.Addresses;
 using StockportGovUK.NetStandard.Models.ContactDetails;
 using Xunit;
 
@@ -70,7 +72,7 @@ namespace flooding_service_tests.Mappers
                 "What do you want to report: flood\r\nWhere is the flooding coming from: river\r\nWhere is the flood: pavement\r\nIs the flooding blocking the whole pavement: yes\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
 
             // Act
-            var result = request.ToCase(_pavementVerintOptions, _confirmAttributeFormOptions);
+            var result = request.ToCase(_pavementVerintOptions, _confirmAttributeFormOptions, It.IsAny<AddressSearchResult>());
 
             // Assert
             Assert.Equal(2002592, result.EventCode);
@@ -105,7 +107,7 @@ namespace flooding_service_tests.Mappers
                 "What do you want to report: flood\r\nWhere is the flooding coming from: river\r\nWhere is the flood: home\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
 
             // Act
-            var result = request.ToCase(_pavementVerintOptions, _confirmAttributeFormOptions);
+            var result = request.ToCase(_pavementVerintOptions, _confirmAttributeFormOptions, It.IsAny<AddressSearchResult>());
 
             // Assert
             Assert.Equal(2009484, result.EventCode);
