@@ -49,13 +49,13 @@ namespace flooding_service.Services
                     .Aggregate("", (x, y) => x + y + ',').Trim(','));
                 if (usrn.ResponseContent == null)
                 {
-                    _logger.LogInformation($"FloodingService:: CreateCase:: Street lookup returned: null");
+                    _logger.LogWarning($"FloodingService:: CreateCase:: Street lookup returned: null");
                 }
                 else
                 {
                     foreach (var result in usrn.ResponseContent)
                     {
-                        _logger.LogInformation($"FloodingService:: CreateCase:: Street lookup returned: USRN-{result.USRN} UniqueId-{result.UniqueId}");
+                        _logger.LogWarning($"FloodingService:: CreateCase:: Street lookup returned: USRN-{result.USRN} UniqueId-{result.UniqueId}");
                     }
                 }
                 
