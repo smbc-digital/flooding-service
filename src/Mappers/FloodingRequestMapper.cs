@@ -26,7 +26,6 @@ namespace flooding_service.Mappers
                 },
                 Description = DescriptionBuilder(floodingRequest),
                 RaisedByBehaviour = RaisedByBehaviourEnum.Individual,
-                AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Street
             };
 
             if (floodingRequest.DidNotUseMap)
@@ -34,16 +33,19 @@ namespace flooding_service.Mappers
                 crmCase.Street = new Street
                 {
                     USRN = ConfirmConstants.USRN,
-                    Description = ConfirmConstants.Description
+                    Description = ConfirmConstants.Description,
+                    Reference = ConfirmConstants.USRN
                 };
             }
             else
             {
+                crmCase.AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Street;
                 var street = floodingRequest.Map?.Street.Split(',').ToList();
                 crmCase.Street = new Street
                 {
                     USRN = street.Last().Trim(),
-                    Description = street.SkipLast(1).Aggregate("",(x,y) => x + y + ',').Trim(',')
+                    Description = street.SkipLast(1).Aggregate("",(x,y) => x + y + ',').Trim(','),
+                    Reference = street.Last().Trim()
                 };
             }
 
