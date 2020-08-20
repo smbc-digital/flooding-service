@@ -47,6 +47,17 @@ namespace flooding_service.Services
                 var street = request.Map?.Street.Split(',').ToList();
                 var streetSearchResults = await _verintServiceGateway.GetStreetByReference(street.SkipLast(1)
                     .Aggregate("", (x, y) => x + y + ',').Trim(','));
+                var usrn = await _verintServiceGateway.GetStreet(street.Last().Trim());
+
+                if (usrn.ResponseContent != null)
+                {
+                    _logger.LogWarning($"FloodingService:: CreateCase:: Street found = {JsonConvert.SerializeObject(usrn)}");
+                }
+                else
+                {
+                    _logger.LogWarning("FloodingService:: CreateCase:: No street found");
+                }
+
                 var streetResult = streetSearchResults.ResponseContent == null || streetSearchResults.ResponseContent.Count > 1
                     ? null
                     : streetSearchResults.ResponseContent.FirstOrDefault();
