@@ -47,7 +47,11 @@ namespace flooding_service.Services
                 var street = request.Map?.Street.Split(',').ToList();
                 var usrn = await _verintServiceGateway.GetStreetByReference(street.SkipLast(1)
                     .Aggregate("", (x, y) => x + y + ',').Trim(','));
-                if (usrn.ResponseContent != null)
+                if (usrn.ResponseContent == null)
+                {
+                    _logger.LogInformation($"FloodingService:: CreateCase:: Street lookup returned: null");
+                }
+                else
                 {
                     foreach (var result in usrn.ResponseContent)
                     {
