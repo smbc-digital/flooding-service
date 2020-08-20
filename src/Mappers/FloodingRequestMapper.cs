@@ -12,7 +12,11 @@ namespace flooding_service.Mappers
 {
     public static class FloodingRequestMapper
     {
-        public static Case ToCase(this FloodingRequest floodingRequest, PavementVerintOptions verintOptions, ConfirmAttributeFormOptions confirmAttributeFormOptions, AddressSearchResult streetResult)
+        public static Case ToCase(
+            this FloodingRequest floodingRequest, 
+            PavementVerintOptions verintOptions, 
+            ConfirmAttributeFormOptions confirmAttributeFormOptions, 
+            AddressSearchResult streetResult)
         {
             var crmCase = new Case
             {
@@ -36,7 +40,6 @@ namespace flooding_service.Mappers
                 {
                     USRN = ConfirmConstants.USRN,
                     Description = ConfirmConstants.Description,
-                    Reference = ConfirmConstants.USRN
                 };
             }
             else

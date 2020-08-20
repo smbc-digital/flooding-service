@@ -45,21 +45,13 @@ namespace flooding_service.Services
             try
             {
                 var street = request.Map?.Street.Split(',').ToList();
-                var usrn = await _verintServiceGateway.GetStreetByReference(street.SkipLast(1)
+                var streetSearchResults = await _verintServiceGateway.GetStreetByReference(street.SkipLast(1)
                     .Aggregate("", (x, y) => x + y + ',').Trim(','));
-                if (usrn.ResponseContent == null)
-                {
-                    _logger.LogWarning($"FloodingService:: CreateCase:: Street lookup returned: null");
-                }
-                else
-                {
-                    foreach (var result in usrn.ResponseContent)
-                    {
-                        _logger.LogWarning($"FloodingService:: CreateCase:: Street lookup returned: USRN-{result.USRN} UniqueId-{result.UniqueId}");
-                    }
-                }
-                
-                var crmCase = request.ToCase(_pavementVerintOptions.Value, _confirmAttributeFormOptions.Value, usrn.ResponseContent?.FirstOrDefault());
+                var streetResult = streetSearchResults.ResponseContent == null || streetSearchResults.ResponseContent.Count > 1
+                    ? null
+                    : streetSearchResults.ResponseContent.FirstOrDefault();
+
+                var crmCase = request.ToCase(_pavementVerintOptions.Value, _confirmAttributeFormOptions.Value, streetResult);
                 var confirmIntegrationFormOptions = request.ToConfirmFormOptions(_confirmAttributeFormOptions.Value);
                 var verintRequest = crmCase.ToConfirmIntegrationFormCase(confirmIntegrationFormOptions);
 
