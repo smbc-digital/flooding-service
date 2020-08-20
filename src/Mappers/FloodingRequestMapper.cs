@@ -51,7 +51,7 @@ namespace flooding_service.Mappers
 
                 if (streetResult != null)
                 {
-                    crmCase.Street.Reference = streetResult.USRN;
+                    crmCase.Street.Reference = streetResult.UniqueId;
                 }
             }
 
