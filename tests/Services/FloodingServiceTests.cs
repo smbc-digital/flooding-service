@@ -122,6 +122,10 @@ namespace flooding_service_tests.Services
                 .Setup(_ => _.GetStreetByReference(It.IsAny<string>()))
                 .ReturnsAsync(new HttpResponse<List<AddressSearchResult>>());
 
+            _mockVerintServiceGateway
+                .Setup(_ => _.GetStreet(It.IsAny<string>()))
+                .ReturnsAsync(new HttpResponse<AddressSearchResult>());
+
             _floodingService = new FloodingService(
                 _mockVerintServiceGateway.Object,
                 _mockMailingServiceGateway.Object,
