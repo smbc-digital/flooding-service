@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
+using flooding_service.Helpers;
 using flooding_service.Mappers;
 using flooding_service.Models;
 using Microsoft.Extensions.Options;
@@ -24,25 +25,30 @@ namespace flooding_service.Services
         private readonly IMailingServiceGateway _mailingServiceGateway;
         private readonly IOptions<PavementVerintOptions> _pavementVerintOptions;
         private readonly IOptions<ConfirmAttributeFormOptions> _confirmAttributeFormOptions;
+        private readonly IStreetHelper _streetHelper;
 
         public FloodingService(IVerintServiceGateway verintServiceGateway,
                                 IMailingServiceGateway mailingServiceGateway,
                                 IOptions<PavementVerintOptions> pavementVerintOptions,
-                                IOptions<ConfirmAttributeFormOptions> confirmAttributeFormOptions)
+                                IOptions<ConfirmAttributeFormOptions> confirmAttributeFormOptions, 
+                                IStreetHelper streetHelper)
         {
             _verintServiceGateway = verintServiceGateway;
             _mailingServiceGateway = mailingServiceGateway;
             _pavementVerintOptions = pavementVerintOptions;
             _confirmAttributeFormOptions = confirmAttributeFormOptions;
+            _streetHelper = streetHelper;
         }
 
         public async Task<string> CreateCase(FloodingRequest request)
         {
             try
             {
-                var crmCase = request.ToCase(_pavementVerintOptions.Value, _confirmAttributeFormOptions.Value);
+                var streetResult = request.DidNotUseMap ? null : await _streetHelper.GetStreetUniqueId(request.Map);
+                var crmCase = request.ToCase(_pavementVerintOptions.Value, _confirmAttributeFormOptions.Value, streetResult);
                 var confirmIntegrationFormOptions = request.ToConfirmFormOptions(_confirmAttributeFormOptions.Value);
                 var verintRequest = crmCase.ToConfirmIntegrationFormCase(confirmIntegrationFormOptions);
+
                 var caseResult = await _verintServiceGateway.CreateVerintOnlineFormCase(verintRequest);
 
                 await _mailingServiceGateway.Send(new Mail

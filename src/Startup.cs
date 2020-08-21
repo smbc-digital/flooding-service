@@ -26,6 +26,7 @@ namespace flooding_service
 
             services.AddGateways(Configuration)
                     .AddServices()
+                    .AddHelpers()
                     .AddIOptions(Configuration);
 
             services.AddSwagger();

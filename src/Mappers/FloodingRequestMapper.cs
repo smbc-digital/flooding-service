@@ -4,13 +4,19 @@ using System.Text;
 using flooding_service.Constants;
 using flooding_service.Controllers.Models;
 using flooding_service.Models;
+using StockportGovUK.NetStandard.Models.Addresses;
 using StockportGovUK.NetStandard.Models.Verint;
+using Street = StockportGovUK.NetStandard.Models.Verint.Street;
 
 namespace flooding_service.Mappers
 {
     public static class FloodingRequestMapper
     {
-        public static Case ToCase(this FloodingRequest floodingRequest, PavementVerintOptions verintOptions, ConfirmAttributeFormOptions confirmAttributeFormOptions)
+        public static Case ToCase(
+            this FloodingRequest floodingRequest, 
+            PavementVerintOptions verintOptions, 
+            ConfirmAttributeFormOptions confirmAttributeFormOptions, 
+            AddressSearchResult streetResult)
         {
             var crmCase = new Case
             {
@@ -40,12 +46,11 @@ namespace flooding_service.Mappers
             else
             {
                 crmCase.AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Street;
-                var street = floodingRequest.Map?.Street.Split(',').ToList();
                 crmCase.Street = new Street
                 {
-                    USRN = street.Last().Trim(),
-                    Description = street.SkipLast(1).Aggregate("",(x,y) => x + y + ',').Trim(','),
-                    Reference = street.Last().Trim()
+                    USRN = streetResult.USRN,
+                    Description = streetResult.Name,
+                    Reference = string.IsNullOrEmpty(streetResult.UniqueId) ? null : streetResult.UniqueId
                 };
             }
 

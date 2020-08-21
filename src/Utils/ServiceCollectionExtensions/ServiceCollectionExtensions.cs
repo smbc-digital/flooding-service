@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using flooding_service.Helpers;
 using flooding_service.Models;
 using flooding_service.Services;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +24,13 @@ namespace flooding_service.Utils.ServiceCollectionExtensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddSingleton<IFloodingService, FloodingService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddHelpers(this IServiceCollection services)
+        {
+            services.AddSingleton<IStreetHelper, StreetHelper>();
 
             return services;
         }
