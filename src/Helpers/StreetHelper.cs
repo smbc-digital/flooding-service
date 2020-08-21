@@ -32,7 +32,7 @@ namespace flooding_service.Helpers
             if (streetResponse?.ResponseContent != null)
                 return streetResponse.ResponseContent.FirstOrDefault();
 
-            _logger.LogWarning($"FloodingService:: GetStreetUniqueId:: No street found with USRN: {streetUsrn}");
+            _logger.LogWarning($"FloodingService:: GetStreetUniqueId:: No street found with USRN: {streetUsrn}, returned status code: {streetResponse.StatusCode}");
             return new AddressSearchResult
             {
                 USRN = streetUsrn,
