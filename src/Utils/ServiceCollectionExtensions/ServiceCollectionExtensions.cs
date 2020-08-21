@@ -31,6 +31,7 @@ namespace flooding_service.Utils.ServiceCollectionExtensions
         public static IServiceCollection AddHelpers(this IServiceCollection services)
         {
             services.AddSingleton<IStreetHelper, StreetHelper>();
+            services.AddSingleton<IMailHelper, MailHelper>();
 
             return services;
         }
