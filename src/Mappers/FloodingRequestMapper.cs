@@ -39,7 +39,8 @@ namespace flooding_service.Mappers
                 crmCase.Street = new Street
                 {
                     USRN = ConfirmConstants.USRN,
-                    Description = ConfirmConstants.Description
+                    Description = ConfirmConstants.Description,
+                    Reference = ConfirmConstants.USRN
                 };
             }
             else
