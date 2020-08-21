@@ -39,23 +39,18 @@ namespace flooding_service.Mappers
                 crmCase.Street = new Street
                 {
                     USRN = ConfirmConstants.USRN,
-                    Description = ConfirmConstants.Description,
+                    Description = ConfirmConstants.Description
                 };
             }
             else
             {
                 crmCase.AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Street;
-                var street = floodingRequest.Map?.Street.Split(',').ToList();
                 crmCase.Street = new Street
                 {
-                    USRN = street.Last().Trim(),
-                    Description = street.SkipLast(1).Aggregate("",(x,y) => x + y + ',').Trim(','),
+                    USRN = streetResult.USRN,
+                    Description = streetResult.Name,
+                    Reference = string.IsNullOrEmpty(streetResult.UniqueId) ? null : streetResult.UniqueId
                 };
-
-                if (streetResult != null)
-                {
-                    crmCase.Street.Reference = streetResult.UniqueId;
-                }
             }
 
             return crmCase;

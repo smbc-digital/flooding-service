@@ -2,9 +2,9 @@
 using System.Net;
 using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
+using flooding_service.Helpers;
 using flooding_service.Models;
 using flooding_service.Services;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using StockportGovUK.NetStandard.Gateways.MailingService;
@@ -23,8 +23,8 @@ namespace flooding_service_tests.Services
         private readonly FloodingService _floodingService;
         private readonly Mock<IVerintServiceGateway> _mockVerintServiceGateway = new Mock<IVerintServiceGateway>();
         private readonly Mock<IMailingServiceGateway> _mockMailingServiceGateway = new Mock<IMailingServiceGateway>();
-        private readonly Mock<ILogger<FloodingService>> _mockLogger = new Mock<ILogger<FloodingService>>();
-        private readonly FloodingRequest _floodingRequest = new FloodingRequest
+        private readonly Mock<IStreetHelper> _mockStreetHelper = new Mock<IStreetHelper>();
+        private FloodingRequest _floodingRequest = new FloodingRequest
         {
             HowWouldYouLikeToBeContacted = "phone",
             IsTheFloodingBlockingTheWholePavementOrCausing = "yes",
@@ -61,6 +61,12 @@ namespace flooding_service_tests.Services
                             Value = "123456",
                             Code = "testCode",
                             Type = "pavement"
+                        },
+                        new Config
+                        {
+                            Value = "123456",
+                            Code = "testCode",
+                            Type = "home"
                         }
                     },
                     RiverOrCulvertedWaterConfig = new List<Config>
@@ -78,6 +84,11 @@ namespace flooding_service_tests.Services
                         {
                             Type = "pavement",
                             Value = "HWAY"
+                        },
+                        new Config
+                        {
+                            Type = "home",
+                            Value = "HOME"
                         }
                     },
                     SubjectCode = new List<Config>
@@ -85,6 +96,11 @@ namespace flooding_service_tests.Services
                         new Config
                         {
                             Type = "pavement",
+                            Value = "CWFD"
+                        },
+                        new Config
+                        {
+                            Type = "home",
                             Value = "CWFD"
                         }
                     },
@@ -118,20 +134,65 @@ namespace flooding_service_tests.Services
                     ResponseContent = "test"
                 });
 
-            _mockVerintServiceGateway
-                .Setup(_ => _.GetStreetByReference(It.IsAny<string>()))
-                .ReturnsAsync(new HttpResponse<List<AddressSearchResult>>());
-
-            _mockVerintServiceGateway
-                .Setup(_ => _.GetStreet(It.IsAny<string>()))
-                .ReturnsAsync(new HttpResponse<AddressSearchResult>());
+            _mockStreetHelper
+                .Setup(_ => _.GetStreetUniqueId(It.IsAny<Map>()))
+                .ReturnsAsync(new AddressSearchResult
+                {
+                    UniqueId = "123456",
+                    USRN = "654321",
+                    Name = "TestName"
+                });
 
             _floodingService = new FloodingService(
                 _mockVerintServiceGateway.Object,
                 _mockMailingServiceGateway.Object,
                 mockPavementVerintOptions.Object,
                 mockConfirmAttributeFromOptions.Object,
-                _mockLogger.Object);
+                _mockStreetHelper.Object);
+        }
+
+        [Fact]
+        public async Task CreateCase_ShouldCallStreetHelper_IfMapUsed()
+        {
+            // Act
+            await _floodingService.CreateCase(_floodingRequest);
+
+            // Assert
+            _mockStreetHelper.Verify(_ => _.GetStreetUniqueId(It.IsAny<Map>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task CreateCase_ShouldNotCallStreetHelper_IfMapNotUsed()
+        {
+            // Arrange
+            var floodingRequest = new FloodingRequest
+            {
+                HowWouldYouLikeToBeContacted = "phone",
+                IsTheFloodingBlockingTheWholePavementOrCausing = "yes",
+                Map = new Map
+                {
+                    Lat = "50.23",
+                    Lng = "-2.255",
+                    Street = "street, place, 1234"
+                },
+                Reporter = new ContactDetails
+                {
+                    FirstName = "firstName",
+                    LastName = "lastName",
+                    EmailAddress = "test@test.com",
+                    PhoneNumber = "01222333333"
+                },
+                TellUsABoutTheFlood = "it is a flood",
+                WhatDoYouWantToReport = "a flood",
+                WhereIsTheFlood = "home",
+                WhereIsTheFloodingComingFrom = "river"
+            };
+
+            // Act
+            await _floodingService.CreateCase(floodingRequest);
+
+            // Assert
+            _mockStreetHelper.Verify(_ => _.GetStreetUniqueId(It.IsAny<Map>()), Times.Never);
         }
 
         [Fact]

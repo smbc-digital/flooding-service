@@ -1,10 +1,9 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
+using flooding_service.Helpers;
 using flooding_service.Mappers;
 using flooding_service.Models;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using StockportGovUK.NetStandard.Extensions.VerintExtensions.VerintOnlineFormsExtensions.ConfirmIntegrationFromExtensions;
@@ -26,48 +25,26 @@ namespace flooding_service.Services
         private readonly IMailingServiceGateway _mailingServiceGateway;
         private readonly IOptions<PavementVerintOptions> _pavementVerintOptions;
         private readonly IOptions<ConfirmAttributeFormOptions> _confirmAttributeFormOptions;
-        private readonly ILogger<FloodingService> _logger;
+        private readonly IStreetHelper _streetHelper;
 
         public FloodingService(IVerintServiceGateway verintServiceGateway,
                                 IMailingServiceGateway mailingServiceGateway,
                                 IOptions<PavementVerintOptions> pavementVerintOptions,
-                                IOptions<ConfirmAttributeFormOptions> confirmAttributeFormOptions, ILogger<FloodingService> logger)
+                                IOptions<ConfirmAttributeFormOptions> confirmAttributeFormOptions, 
+                                IStreetHelper streetHelper)
         {
             _verintServiceGateway = verintServiceGateway;
             _mailingServiceGateway = mailingServiceGateway;
             _pavementVerintOptions = pavementVerintOptions;
             _confirmAttributeFormOptions = confirmAttributeFormOptions;
-            _logger = logger;
+            _streetHelper = streetHelper;
         }
 
         public async Task<string> CreateCase(FloodingRequest request)
         {
             try
             {
-                var street = request.Map?.Street.Split(',').ToList();
-                var streetSearchResults = await _verintServiceGateway.GetStreetByReference(street.SkipLast(1)
-                    .Aggregate("", (x, y) => x + y + ',').Trim(','));
-                try
-                {
-                    var usrn = await _verintServiceGateway.GetStreet(street.Last().Trim());
-                    if (usrn.ResponseContent != null)
-                    {
-                        _logger.LogWarning($"FloodingService:: CreateCase:: Street found = {JsonConvert.SerializeObject(usrn)}");
-                    }
-                    else
-                    {
-                        _logger.LogWarning("FloodingService:: CreateCase:: No street found");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"FloodingService:: CreateCase:: Failed on call to Verint GetStreet, error: {ex.Message}");
-                }
-
-                var streetResult = streetSearchResults.ResponseContent == null || streetSearchResults.ResponseContent.Count > 1
-                    ? null
-                    : streetSearchResults.ResponseContent.FirstOrDefault();
-
+                var streetResult = request.DidNotUseMap ? null : await _streetHelper.GetStreetUniqueId(request.Map);
                 var crmCase = request.ToCase(_pavementVerintOptions.Value, _confirmAttributeFormOptions.Value, streetResult);
                 var confirmIntegrationFormOptions = request.ToConfirmFormOptions(_confirmAttributeFormOptions.Value);
                 var verintRequest = crmCase.ToConfirmIntegrationFormCase(confirmIntegrationFormOptions);

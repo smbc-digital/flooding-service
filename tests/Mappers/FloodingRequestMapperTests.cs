@@ -30,7 +30,6 @@ namespace flooding_service_tests.Mappers
                         Type = "home",
                         Value = "2009484"
                     }
-
                 }
             };
 
@@ -68,18 +67,26 @@ namespace flooding_service_tests.Mappers
                 TellUsABoutTheFlood = "It's a flood"
             };
 
+            var streetResult = new AddressSearchResult
+            {
+                UniqueId = "654321",
+                USRN = "123456",
+                Name = "street, place"
+            };
+
             var expectedDescription =
                 "What do you want to report: flood\r\nWhere is the flooding coming from: river\r\nWhere is the flood: pavement\r\nIs the flooding blocking the whole pavement: yes\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
 
             // Act
-            var result = request.ToCase(_pavementVerintOptions, _confirmAttributeFormOptions, It.IsAny<AddressSearchResult>());
+            var result = request.ToCase(_pavementVerintOptions, _confirmAttributeFormOptions, streetResult);
 
             // Assert
             Assert.Equal(2002592, result.EventCode);
             Assert.Equal(_pavementVerintOptions.Classification, result.Classification);
             Assert.Equal(_pavementVerintOptions.EventTitle, result.EventTitle);
-            Assert.Equal("street, place", result.Street.Description);
-            Assert.Equal("123456", result.Street.USRN);
+            Assert.Equal(streetResult.Name, result.Street.Description);
+            Assert.Equal(streetResult.USRN, result.Street.USRN);
+            Assert.Equal(streetResult.UniqueId, result.Street.Reference);
             Assert.Equal(expectedDescription, result.Description);
         }
 
