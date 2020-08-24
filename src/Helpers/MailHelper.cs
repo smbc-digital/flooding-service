@@ -27,6 +27,9 @@ namespace flooding_service.Helpers
 
         public async Task SendEmail(FloodingRequest floodingRequest, string caseReference)
         {
+            if(string.IsNullOrEmpty(floodingRequest.Reporter.EmailAddress))
+                return;
+
             EMailTemplate template;
             var templateNotFound = false;
 
