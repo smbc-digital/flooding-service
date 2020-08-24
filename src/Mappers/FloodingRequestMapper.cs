@@ -67,6 +67,9 @@ namespace flooding_service.Mappers
             if(!string.IsNullOrWhiteSpace(floodingRequest.IsTheFloodingBlockingTheWholePavementOrCausing))
                 description.Append($"Is the flooding blocking the whole pavement: {floodingRequest.IsTheFloodingBlockingTheWholePavementOrCausing}{Environment.NewLine}");
 
+            if(!string.IsNullOrWhiteSpace(floodingRequest.IsTheFloodingBlockingTheWholeRoadOrCausing))
+                description.Append($"Is the flooding blocking the whole road: {floodingRequest.IsTheFloodingBlockingTheWholeRoadOrCausing}{Environment.NewLine}");
+
             description.Append($"Tell us about the flood: {floodingRequest.TellUsABoutTheFlood}{Environment.NewLine}")
                 .Append($"How would you like to be contacted: {floodingRequest.HowWouldYouLikeToBeContacted}{Environment.NewLine}");
 

@@ -8,6 +8,7 @@ namespace flooding_service.Controllers.Models
         public string WhereIsTheFloodingComingFrom { get; set; }
         public string WhereIsTheFlood { get; set; }
         public string IsTheFloodingBlockingTheWholePavementOrCausing { get; set; }
+        public string IsTheFloodingBlockingTheWholeRoadOrCausing { get; set; }
         public Map Map { get; set; }
         public string TellUsABoutTheFlood { get; set; }
         public ContactDetails Reporter { get; set; }
