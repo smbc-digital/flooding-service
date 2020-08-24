@@ -6,6 +6,7 @@ using flooding_service.Controllers.Models;
 using flooding_service.Helpers;
 using flooding_service.Models;
 using flooding_service.Services;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Newtonsoft.Json;
@@ -26,6 +27,7 @@ namespace flooding_service_tests.Services
         private readonly Mock<IMailHelper> _mockMailHelper = new Mock<IMailHelper>();
         private readonly Mock<IStreetHelper> _mockStreetHelper = new Mock<IStreetHelper>();
         private readonly Mock<IGateway> _mockGateway = new Mock<IGateway>();
+        private readonly Mock<ILogger<FloodingService>> _mockLogger = new Mock<ILogger<FloodingService>>();
         private FloodingRequest _floodingRequest = new FloodingRequest
         {
             HowWouldYouLikeToBeContacted = "phone",
@@ -158,7 +160,8 @@ namespace flooding_service_tests.Services
                 mockPavementVerintOptions.Object,
                 mockConfirmAttributeFromOptions.Object,
                 _mockStreetHelper.Object,
-                _mockGateway.Object);
+                _mockGateway.Object,
+                _mockLogger.Object);
         }
 
         [Fact]
