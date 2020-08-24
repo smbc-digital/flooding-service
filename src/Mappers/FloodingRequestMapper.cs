@@ -62,13 +62,13 @@ namespace flooding_service.Mappers
             var description = new StringBuilder()
                 .Append($"What do you want to report: {floodingRequest.WhatDoYouWantToReport}{Environment.NewLine}")
                 .Append($"Where is the flooding coming from: {floodingRequest.WhereIsTheFloodingComingFrom}{Environment.NewLine}")
-                .Append($"Where is the flood: {floodingRequest.WhereIsTheFlood}{Environment.NewLine}");
+                .Append($"Where is the flood: {floodingRequest.WhereIsTheFlood.WhereIsTheFloodToReadableText()}{Environment.NewLine}");
 
             if(!string.IsNullOrWhiteSpace(floodingRequest.IsTheFloodingBlockingTheWholePavementOrCausing))
-                description.Append($"Is the flooding blocking the whole pavement: {floodingRequest.IsTheFloodingBlockingTheWholePavementOrCausing}{Environment.NewLine}");
+                description.Append($"Blocking pavement: {floodingRequest.IsTheFloodingBlockingTheWholePavementOrCausing}{Environment.NewLine}");
 
             if(!string.IsNullOrWhiteSpace(floodingRequest.IsTheFloodingBlockingTheWholeRoadOrCausing))
-                description.Append($"Is the flooding blocking the whole road: {floodingRequest.IsTheFloodingBlockingTheWholeRoadOrCausing}{Environment.NewLine}");
+                description.Append($"Blocking road: {floodingRequest.IsTheFloodingBlockingTheWholeRoadOrCausing}{Environment.NewLine}");
 
             description.Append($"Tell us about the flood: {floodingRequest.TellUsABoutTheFlood}{Environment.NewLine}")
                 .Append($"How would you like to be contacted: {floodingRequest.HowWouldYouLikeToBeContacted}{Environment.NewLine}");

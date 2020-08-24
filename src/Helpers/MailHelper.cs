@@ -35,7 +35,8 @@ namespace flooding_service.Helpers
 
             switch (floodingRequest.WhereIsTheFlood)
             {
-                case "pavement": 
+                case "pavement":
+                case "road":
                     template = EMailTemplate.ReportAFloodPublicSpaces;
                     break;
                 default:

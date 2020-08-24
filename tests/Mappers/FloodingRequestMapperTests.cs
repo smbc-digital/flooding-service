@@ -75,7 +75,7 @@ namespace flooding_service_tests.Mappers
             };
 
             var expectedDescription =
-                "What do you want to report: flood\r\nWhere is the flooding coming from: river\r\nWhere is the flood: pavement\r\nIs the flooding blocking the whole pavement: yes\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
+                "What do you want to report: flood\r\nWhere is the flooding coming from: river\r\nWhere is the flood: On a pavement\r\nBlocking pavement: yes\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
 
             // Act
             var result = request.ToCase(_pavementVerintOptions, _confirmAttributeFormOptions, streetResult);
