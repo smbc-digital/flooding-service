@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
 using flooding_service.Helpers;
@@ -76,13 +77,15 @@ namespace flooding_service.Services
         {
             try
             {
-                var result = await _gateway.GetAsync($"CoordConvert_LL_BNG.cfc?method=LatLongToBNG&lat={map.Lat}&lon={map.Lng}");
+                var client = new HttpClient();
+                var result = await client.GetAsync($"http://www.bgs.ac.uk/data/webservices/CoordConvert_LL_BNG.cfc?method=LatLongToBNG&lat={map.Lat}&lon={map.Lng}");
+                _logger.LogWarning($"FloodingService:: ConvertLatLng:: Response is: {JsonConvert.SerializeObject(result)}");
 
                 var response = JsonConvert.DeserializeObject<MapResponse>(await result.Content.ReadAsStringAsync());
+
                 map.Lat = response.Easting;
                 map.Lng = response.Northing;
 
-                _logger.LogWarning($"FloodingService:: ConvertLatLng:: Response is: {JsonConvert.SerializeObject(response)}");
                 return map;
             }
             catch (Exception ex)
@@ -90,7 +93,6 @@ namespace flooding_service.Services
                 _logger.LogWarning($"FloodingService:: ConvertLatLng:: Error message: {ex.Message}");
                 throw new Exception();
             }
-            
         }
     }
 }
