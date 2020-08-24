@@ -52,10 +52,10 @@ namespace flooding_service.Services
             {
                 var streetResult = request.DidNotUseMap ? null : await _streetHelper.GetStreetUniqueId(request.Map);
 
-                if (!request.DidNotUseMap)
-                {
-                    request.Map = await ConvertLatLng(request.Map);
-                }
+                //if (!request.DidNotUseMap)
+                //{
+                //    request.Map = await ConvertLatLng(request.Map);
+                //}
 
                 var crmCase = request.ToCase(_pavementVerintOptions.Value, _confirmAttributeFormOptions.Value, streetResult);
                 var confirmIntegrationFormOptions = request.ToConfirmFormOptions(_confirmAttributeFormOptions.Value);
