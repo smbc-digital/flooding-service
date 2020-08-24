@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
 using flooding_service.Helpers;
@@ -7,6 +8,8 @@ using flooding_service.Models;
 using flooding_service.Services;
 using Microsoft.Extensions.Options;
 using Moq;
+using Newtonsoft.Json;
+using StockportGovUK.NetStandard.Gateways;
 using StockportGovUK.NetStandard.Gateways.Response;
 using StockportGovUK.NetStandard.Gateways.VerintService;
 using StockportGovUK.NetStandard.Models.Addresses;
@@ -22,6 +25,7 @@ namespace flooding_service_tests.Services
         private readonly Mock<IVerintServiceGateway> _mockVerintServiceGateway = new Mock<IVerintServiceGateway>();
         private readonly Mock<IMailHelper> _mockMailHelper = new Mock<IMailHelper>();
         private readonly Mock<IStreetHelper> _mockStreetHelper = new Mock<IStreetHelper>();
+        private readonly Mock<IGateway> _mockGateway = new Mock<IGateway>();
         private FloodingRequest _floodingRequest = new FloodingRequest
         {
             HowWouldYouLikeToBeContacted = "phone",
@@ -134,12 +138,27 @@ namespace flooding_service_tests.Services
                     Name = "TestName"
                 });
 
+            var mapResponse = new MapResponse
+            {
+                Easting = "56789",
+                Northing = "123456"
+            };
+
+            _mockGateway
+                .Setup(_ => _.GetAsync(It.IsAny<string>()))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StringContent(JsonConvert.SerializeObject(mapResponse))
+                });
+
             _floodingService = new FloodingService(
                 _mockVerintServiceGateway.Object,
                 _mockMailHelper.Object,
                 mockPavementVerintOptions.Object,
                 mockConfirmAttributeFromOptions.Object,
-                _mockStreetHelper.Object);
+                _mockStreetHelper.Object,
+                _mockGateway.Object);
         }
 
         [Fact]
@@ -214,6 +233,20 @@ namespace flooding_service_tests.Services
 
             // Assert
             Assert.Contains("tes ref", result);
+        }
+
+        [Fact]
+        public async Task CreateCase_ShouldCallGatewayGetAsync_ConvertLatLngIfMapUsed()
+        {
+            // Act
+            var result = await _floodingService.CreateCase(_floodingRequest);
+            
+            // Assert
+            _mockGateway.Verify(_ => _.GetAsync(It.IsAny<string>()), Times.Once);
+            Assert.NotEqual("50.23", _floodingRequest.Map.Lat);
+            Assert.NotEqual("-2.255", _floodingRequest.Map.Lng);
+            Assert.Equal("56789", _floodingRequest.Map.Lat);
+            Assert.Equal("123456", _floodingRequest.Map.Lng);
         }
     }
 }
