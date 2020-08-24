@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using StockportGovUK.NetStandard.Models.ContactDetails;
 
 namespace flooding_service.Controllers.Models
@@ -21,5 +22,12 @@ namespace flooding_service.Controllers.Models
         public string Lat { get; set; }
         public string Lng { get; set; }
         public string Street { get; set; }
+    }
+
+    public class MapResponse
+
+    {
+        public string Northing { get; set; }
+        public string Easting { get; set; }
     }
 }

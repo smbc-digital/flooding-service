@@ -7,10 +7,8 @@ using flooding_service.Models;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using StockportGovUK.NetStandard.Extensions.VerintExtensions.VerintOnlineFormsExtensions.ConfirmIntegrationFromExtensions;
-using StockportGovUK.NetStandard.Gateways.MailingService;
+using StockportGovUK.NetStandard.Gateways;
 using StockportGovUK.NetStandard.Gateways.VerintService;
-using StockportGovUK.NetStandard.Models.Enums;
-using StockportGovUK.NetStandard.Models.Mail;
 
 namespace flooding_service.Services
 {
@@ -22,22 +20,25 @@ namespace flooding_service.Services
     public class FloodingService : IFloodingService
     {
         private readonly IVerintServiceGateway _verintServiceGateway;
-        private readonly IMailingServiceGateway _mailingServiceGateway;
+        private readonly IMailHelper _mailHelper;
         private readonly IOptions<PavementVerintOptions> _pavementVerintOptions;
         private readonly IOptions<ConfirmAttributeFormOptions> _confirmAttributeFormOptions;
         private readonly IStreetHelper _streetHelper;
+        private readonly IGateway _gateway;
 
         public FloodingService(IVerintServiceGateway verintServiceGateway,
-                                IMailingServiceGateway mailingServiceGateway,
+                                IMailHelper mailHelper,
                                 IOptions<PavementVerintOptions> pavementVerintOptions,
-                                IOptions<ConfirmAttributeFormOptions> confirmAttributeFormOptions, 
-                                IStreetHelper streetHelper)
+                                IOptions<ConfirmAttributeFormOptions> confirmAttributeFormOptions,
+                                IStreetHelper streetHelper,
+                                IGateway gateway)
         {
             _verintServiceGateway = verintServiceGateway;
-            _mailingServiceGateway = mailingServiceGateway;
+            _mailHelper = mailHelper;
             _pavementVerintOptions = pavementVerintOptions;
             _confirmAttributeFormOptions = confirmAttributeFormOptions;
             _streetHelper = streetHelper;
+            _gateway = gateway;
         }
 
         public async Task<string> CreateCase(FloodingRequest request)
@@ -45,22 +46,19 @@ namespace flooding_service.Services
             try
             {
                 var streetResult = request.DidNotUseMap ? null : await _streetHelper.GetStreetUniqueId(request.Map);
+
+                if (!request.DidNotUseMap)
+                {
+                    request.Map = await ConvertLatLng(request.Map);
+                }
+
                 var crmCase = request.ToCase(_pavementVerintOptions.Value, _confirmAttributeFormOptions.Value, streetResult);
                 var confirmIntegrationFormOptions = request.ToConfirmFormOptions(_confirmAttributeFormOptions.Value);
                 var verintRequest = crmCase.ToConfirmIntegrationFormCase(confirmIntegrationFormOptions);
 
                 var caseResult = await _verintServiceGateway.CreateVerintOnlineFormCase(verintRequest);
 
-                await _mailingServiceGateway.Send(new Mail
-                {
-                    Payload = JsonConvert.SerializeObject(new
-                    {
-                        Subject = "Report a flood - submission",
-                        Reference = caseResult.ResponseContent.VerintCaseReference,
-                        RecipientAddress = request.Reporter.EmailAddress
-                    }),
-                    Template = EMailTemplate.ReportAFloodPublicSpaces
-                });
+                await _mailHelper.SendEmail(request, caseResult.ResponseContent.VerintCaseReference);
 
                 return caseResult.ResponseContent.VerintCaseReference;
             }
@@ -68,6 +66,17 @@ namespace flooding_service.Services
             {
                 throw new Exception($"FloodingService:: CreateCase, Failed to create case, exception: {ex.Message}");
             }
+        }
+
+        private async Task<Map> ConvertLatLng(Map map)
+        {
+            var result = await _gateway.GetAsync($"CoordConvert_LL_BNG.cfc?method=LatLongToBNG&lat={map.Lat}&lon={map.Lng}");
+
+            var response = JsonConvert.DeserializeObject<MapResponse>(await result.Content.ReadAsStringAsync());
+            map.Lat = response.Easting;
+            map.Lng = response.Northing;
+
+            return map;
         }
     }
 }
