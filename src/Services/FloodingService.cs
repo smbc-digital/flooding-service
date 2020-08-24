@@ -4,6 +4,7 @@ using flooding_service.Controllers.Models;
 using flooding_service.Helpers;
 using flooding_service.Mappers;
 using flooding_service.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using StockportGovUK.NetStandard.Extensions.VerintExtensions.VerintOnlineFormsExtensions.ConfirmIntegrationFromExtensions;
@@ -25,13 +26,15 @@ namespace flooding_service.Services
         private readonly IOptions<ConfirmAttributeFormOptions> _confirmAttributeFormOptions;
         private readonly IStreetHelper _streetHelper;
         private readonly IGateway _gateway;
+        private readonly ILogger<FloodingService> _logger;
 
         public FloodingService(IVerintServiceGateway verintServiceGateway,
                                 IMailHelper mailHelper,
                                 IOptions<PavementVerintOptions> pavementVerintOptions,
                                 IOptions<ConfirmAttributeFormOptions> confirmAttributeFormOptions,
                                 IStreetHelper streetHelper,
-                                IGateway gateway)
+                                IGateway gateway,
+                                ILogger<FloodingService> logger)
         {
             _verintServiceGateway = verintServiceGateway;
             _mailHelper = mailHelper;
@@ -39,6 +42,7 @@ namespace flooding_service.Services
             _confirmAttributeFormOptions = confirmAttributeFormOptions;
             _streetHelper = streetHelper;
             _gateway = gateway;
+            _logger = logger;
         }
 
         public async Task<string> CreateCase(FloodingRequest request)
@@ -70,13 +74,23 @@ namespace flooding_service.Services
 
         private async Task<Map> ConvertLatLng(Map map)
         {
-            var result = await _gateway.GetAsync($"CoordConvert_LL_BNG.cfc?method=LatLongToBNG&lat={map.Lat}&lon={map.Lng}");
+            try
+            {
+                var result = await _gateway.GetAsync($"CoordConvert_LL_BNG.cfc?method=LatLongToBNG&lat={map.Lat}&lon={map.Lng}");
 
-            var response = JsonConvert.DeserializeObject<MapResponse>(await result.Content.ReadAsStringAsync());
-            map.Lat = response.Easting;
-            map.Lng = response.Northing;
+                var response = JsonConvert.DeserializeObject<MapResponse>(await result.Content.ReadAsStringAsync());
+                map.Lat = response.Easting;
+                map.Lng = response.Northing;
 
-            return map;
+                _logger.LogWarning($"FloodingService:: ConvertLatLng:: Response is: {JsonConvert.SerializeObject(response)}");
+                return map;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"FloodingService:: ConvertLatLng:: Error message: {ex.Message}");
+                throw new Exception();
+            }
+            
         }
     }
 }

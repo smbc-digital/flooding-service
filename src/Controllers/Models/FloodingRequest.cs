@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using StockportGovUK.NetStandard.Models.ContactDetails;
 
 namespace flooding_service.Controllers.Models
@@ -13,7 +12,6 @@ namespace flooding_service.Controllers.Models
         public string TellUsABoutTheFlood { get; set; }
         public ContactDetails Reporter { get; set; }
         public string HowWouldYouLikeToBeContacted { get; set; }
-
         public bool DidNotUseMap => WhereIsTheFlood.Equals("home") || WhereIsTheFlood.Equals("business");
     }
 
@@ -25,7 +23,6 @@ namespace flooding_service.Controllers.Models
     }
 
     public class MapResponse
-
     {
         public string Northing { get; set; }
         public string Easting { get; set; }
