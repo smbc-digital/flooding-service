@@ -23,7 +23,7 @@ namespace flooding_service.Services
     {
         private readonly IVerintServiceGateway _verintServiceGateway;
         private readonly IMailHelper _mailHelper;
-        private readonly IOptions<PavementVerintOptions> _pavementVerintOptions;
+        private readonly IOptions<VerintOptions> _verintOptions;
         private readonly IOptions<ConfirmAttributeFormOptions> _confirmAttributeFormOptions;
         private readonly IStreetHelper _streetHelper;
         private readonly IGateway _gateway;
@@ -31,7 +31,7 @@ namespace flooding_service.Services
 
         public FloodingService(IVerintServiceGateway verintServiceGateway,
                                 IMailHelper mailHelper,
-                                IOptions<PavementVerintOptions> pavementVerintOptions,
+                                IOptions<VerintOptions> verintOptions,
                                 IOptions<ConfirmAttributeFormOptions> confirmAttributeFormOptions,
                                 IStreetHelper streetHelper,
                                 IGateway gateway,
@@ -39,7 +39,7 @@ namespace flooding_service.Services
         {
             _verintServiceGateway = verintServiceGateway;
             _mailHelper = mailHelper;
-            _pavementVerintOptions = pavementVerintOptions;
+            _verintOptions = verintOptions;
             _confirmAttributeFormOptions = confirmAttributeFormOptions;
             _streetHelper = streetHelper;
             _gateway = gateway;
@@ -57,9 +57,9 @@ namespace flooding_service.Services
                 //    request.Map = await ConvertLatLng(request.Map);
                 //}
 
-                var crmCase = request.ToCase(_pavementVerintOptions.Value, _confirmAttributeFormOptions.Value, streetResult);
-                var confirmIntegrationFormOptions = request.ToConfirmFormOptions(_confirmAttributeFormOptions.Value);
-                var verintRequest = crmCase.ToConfirmIntegrationFormCase(confirmIntegrationFormOptions);
+                var configuration = request.ToConfig(_confirmAttributeFormOptions.Value, _verintOptions.Value);
+                var crmCase = request.ToCase(configuration, streetResult);
+                var verintRequest = crmCase.ToConfirmIntegrationFormCase(configuration.ConfirmIntegrationFormOptions);
 
                 var caseResult = await _verintServiceGateway.CreateVerintOnlineFormCase(verintRequest);
 

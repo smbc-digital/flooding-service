@@ -40,7 +40,7 @@ namespace flooding_service.Utils.ServiceCollectionExtensions
 
         public static IServiceCollection AddIOptions(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<PavementVerintOptions>(configuration.GetSection(PavementVerintOptions.ConfigValue));
+            services.Configure<VerintOptions>(configuration.GetSection(VerintOptions.ConfigValue));
             services.Configure<ConfirmAttributeFormOptions>(configuration.GetSection(ConfirmAttributeFormOptions.ConfigValue));
 
             return services;

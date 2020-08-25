@@ -7,15 +7,18 @@ namespace flooding_service.Mappers
 {
     public static class ConfirmIntegrationFormOptionsMapper
     {
-        public static ConfirmIntegrationFormOptions ToConfirmFormOptions(this FloodingRequest request, ConfirmAttributeFormOptions attributesFormOptions)
+        public static FloodingConfiguration ToConfig(this FloodingRequest request, ConfirmAttributeFormOptions attributesFormOptions, VerintOptions verintOptions)
         {
-            var formOptions = new ConfirmIntegrationFormOptions();
+            var verintConfig = verintOptions.Options.First(_ => _.Type.Equals(request.WhereIsTheFlood));
 
-            formOptions.FloodingSourceReported = attributesFormOptions.RiverOrCulvertedWaterConfig.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFloodingComingFrom)).Value ?? string.Empty;
-            formOptions.EventId = int.Parse(attributesFormOptions.EventId.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFlood)).Value);
-            formOptions.ClassCode = attributesFormOptions.ClassCode;
-            formOptions.ServiceCode = attributesFormOptions.ServiceCode.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFlood)).Value;
-            formOptions.SubjectCode = attributesFormOptions.SubjectCode.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFlood)).Value;
+            var formOptions = new ConfirmIntegrationFormOptions
+            {
+                FloodingSourceReported = attributesFormOptions.FloodingSourceReported.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFloodingComingFrom))?.Value ?? string.Empty,
+                EventId = verintConfig.EventCode,
+                ClassCode = verintConfig.ClassCode,
+                ServiceCode = verintConfig.ServiceCode,
+                SubjectCode = verintConfig.SubjectCode
+            };
 
             if (!request.DidNotUseMap)
             {
@@ -23,7 +26,11 @@ namespace flooding_service.Mappers
                 formOptions.YCoordinate = request.Map.Lat;
             }
 
-            return formOptions;
+            return new FloodingConfiguration
+            {
+                ConfirmIntegrationFormOptions = formOptions,
+                VerintOption = verintConfig
+            };
         }
     }
 }
