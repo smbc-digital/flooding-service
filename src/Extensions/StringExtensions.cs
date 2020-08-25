@@ -10,6 +10,8 @@ namespace flooding_service.Extensions
                     return "On a pavement";
                 case "road":
                     return "On a road";
+                case "parkOrFootpath":
+                    return "In a park or public footpath";
                 default:
                     return value;
             }
