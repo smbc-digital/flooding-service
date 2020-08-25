@@ -1,8 +1,8 @@
 using System;
-using System.Linq;
 using System.Text;
 using flooding_service.Constants;
 using flooding_service.Controllers.Models;
+using flooding_service.Extensions;
 using flooding_service.Models;
 using StockportGovUK.NetStandard.Models.Addresses;
 using StockportGovUK.NetStandard.Models.Verint;
@@ -14,15 +14,14 @@ namespace flooding_service.Mappers
     {
         public static Case ToCase(
             this FloodingRequest floodingRequest, 
-            PavementVerintOptions verintOptions, 
-            ConfirmAttributeFormOptions confirmAttributeFormOptions, 
+           FloodingConfiguration floodingConfiguration, 
             AddressSearchResult streetResult)
         {
             var crmCase = new Case
             {
-                EventCode = int.Parse(confirmAttributeFormOptions.EventId.FirstOrDefault(_ => _.Type.Equals(floodingRequest.WhereIsTheFlood)).Value),
-                Classification = verintOptions.Classification,
-                EventTitle = verintOptions.EventTitle,
+                EventCode = floodingConfiguration.VerintOption.EventCode,
+                Classification = floodingConfiguration.VerintOption.Classification,
+                EventTitle = floodingConfiguration.VerintOption.EventTitle,
                 Customer = new Customer 
                 {
                     Forename = floodingRequest.Reporter.FirstName,
@@ -60,15 +59,14 @@ namespace flooding_service.Mappers
         private static string DescriptionBuilder(FloodingRequest floodingRequest) 
         {
             var description = new StringBuilder()
-                .Append($"What do you want to report: {floodingRequest.WhatDoYouWantToReport}{Environment.NewLine}")
-                .Append($"Where is the flooding coming from: {floodingRequest.WhereIsTheFloodingComingFrom}{Environment.NewLine}")
+                .Append($"Where is the flooding coming from: {floodingRequest.WhereIsTheFloodingComingFrom.WhereIsTheFloodingComingFromToReadableText()}{Environment.NewLine}")
                 .Append($"Where is the flood: {floodingRequest.WhereIsTheFlood.WhereIsTheFloodToReadableText()}{Environment.NewLine}");
 
             if(!string.IsNullOrWhiteSpace(floodingRequest.IsTheFloodingBlockingTheWholePavementOrCausing))
-                description.Append($"Blocking pavement: {floodingRequest.IsTheFloodingBlockingTheWholePavementOrCausing}{Environment.NewLine}");
+                description.Append($"Blocking the pavement: {floodingRequest.IsTheFloodingBlockingTheWholePavementOrCausing}{Environment.NewLine}");
 
             if(!string.IsNullOrWhiteSpace(floodingRequest.IsTheFloodingBlockingTheWholeRoadOrCausing))
-                description.Append($"Blocking road: {floodingRequest.IsTheFloodingBlockingTheWholeRoadOrCausing}{Environment.NewLine}");
+                description.Append($"Blocking the road: {floodingRequest.IsTheFloodingBlockingTheWholeRoadOrCausing}{Environment.NewLine}");
 
             description.Append($"Tell us about the flood: {floodingRequest.TellUsABoutTheFlood}{Environment.NewLine}")
                 .Append($"How would you like to be contacted: {floodingRequest.HowWouldYouLikeToBeContacted}{Environment.NewLine}");

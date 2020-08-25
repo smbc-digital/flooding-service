@@ -58,66 +58,46 @@ namespace flooding_service_tests.Services
                 .SetupGet(_ => _.Value)
                 .Returns(new ConfirmAttributeFormOptions
                 {
-                    EventId = new List<Config>
+                    FloodingSourceReported = new List<Config>
                     {
                         new Config
                         {
-                            Value = "123456",
-                            Code = "testCode",
-                            Type = "pavement"
+                            Type = "river",
+                            Value = "RIV"
                         },
                         new Config
                         {
-                            Value = "123456",
-                            Code = "testCode",
-                            Type = "home"
+                            Type = "culverted",
+                            Value = "CULV"
                         }
-                    },
-                    RiverOrCulvertedWaterConfig = new List<Config>
-                    {
-                        new Config
-                        {
-                            Value = "riv",
-                            Code = "testCode",
-                            Type = "river"
-                        }
-                    },
-                    ServiceCode = new List<Config>
-                    {
-                        new Config
-                        {
-                            Type = "pavement",
-                            Value = "HWAY"
-                        },
-                        new Config
-                        {
-                            Type = "home",
-                            Value = "HOME"
-                        }
-                    },
-                    SubjectCode = new List<Config>
-                    {
-                        new Config
-                        {
-                            Type = "pavement",
-                            Value = "CWFD"
-                        },
-                        new Config
-                        {
-                            Type = "home",
-                            Value = "CWFD"
-                        }
-                    },
-                    ClassCode = "SERV",
+                    }
                 });
 
-            var mockPavementVerintOptions = new Mock<IOptions<PavementVerintOptions>>();
+            var mockPavementVerintOptions = new Mock<IOptions<VerintOptions>>();
             mockPavementVerintOptions
                 .SetupGet(_ => _.Value)
-                .Returns(new PavementVerintOptions
+                .Returns(new VerintOptions
                 {
-                    Classification = "Test Classification",
-                    EventTitle = "Test Event Title"
+                    Options = new List<Option>
+                {
+                    new Option
+                    {
+                        EventCode = 2002592,
+                        Type = "pavement",
+                        ServiceCode = "HWAY",
+                        SubjectCode = "CWFD",
+                        ClassCode = "SERV"
+                    },
+                    new Option
+                    {
+                        EventCode = 0013254,
+                        Type = "home",
+                        ServiceCode = "HWAY",
+                        SubjectCode = "CWFD",
+                        ClassCode = "SERV"
+
+                    }
+                }
                 });
 
             _mockVerintServiceGateway
@@ -164,7 +144,7 @@ namespace flooding_service_tests.Services
                 _mockLogger.Object);
         }
 
-        [Fact(Skip = "skip for debugging")]
+        [Fact(Skip="use httpClient for debugging")]
         public async Task CreateCase_ShouldCallStreetHelper_IfMapUsed()
         {
             // Act
@@ -174,7 +154,7 @@ namespace flooding_service_tests.Services
             _mockStreetHelper.Verify(_ => _.GetStreetUniqueId(It.IsAny<Map>()), Times.Once);
         }
 
-        [Fact(Skip = "skip for debugging")]
+        [Fact(Skip = "use httpClient for debugging")]
         public async Task CreateCase_ShouldNotCallStreetHelper_IfMapNotUsed()
         {
             // Arrange
@@ -208,7 +188,7 @@ namespace flooding_service_tests.Services
             _mockStreetHelper.Verify(_ => _.GetStreetUniqueId(It.IsAny<Map>()), Times.Never);
         }
 
-        [Fact(Skip = "skip for debugging")]
+        [Fact(Skip = "use httpClient for debugging")]
         public async Task CreateCase_ShouldCallVerintServiceGateway()
         {
             // Act
@@ -218,7 +198,7 @@ namespace flooding_service_tests.Services
             _mockVerintServiceGateway.Verify(_ => _.CreateVerintOnlineFormCase(It.IsAny<VerintOnlineFormRequest>()), Times.Once);
         }
 
-        [Fact(Skip = "skip for debugging")]
+        [Fact(Skip = "use httpClient for debugging")]
         public async Task CreateCase_ShouldCallMailingServiceGateway()
         {
             // Act
@@ -228,7 +208,7 @@ namespace flooding_service_tests.Services
             _mockMailHelper.Verify(_ => _.SendEmail(It.IsAny<FloodingRequest>(), It.IsAny<string>()), Times.Once);
         }
 
-        [Fact(Skip = "skip for debugging")]
+        [Fact(Skip = "use httpClient for debugging")]
         public async Task CreateCase_ShouldReturnResponseContent()
         {
             // Act
@@ -238,12 +218,12 @@ namespace flooding_service_tests.Services
             Assert.Contains("tes ref", result);
         }
 
-        [Fact(Skip = "Change httpClient, skip for now")]
+        [Fact(Skip = "use httpClient for debugging")]
         public async Task CreateCase_ShouldCallGatewayGetAsync_ConvertLatLngIfMapUsed()
         {
             // Act
-            var result = await _floodingService.CreateCase(_floodingRequest);
-            
+            await _floodingService.CreateCase(_floodingRequest);
+
             // Assert
             _mockGateway.Verify(_ => _.GetAsync(It.IsAny<string>()), Times.Once);
             Assert.NotEqual("50.23", _floodingRequest.Map.Lat);

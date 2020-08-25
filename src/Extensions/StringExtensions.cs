@@ -1,4 +1,4 @@
-namespace flooding_service.Mappers
+namespace flooding_service.Extensions
 {
     public static class StringExtensions
     {
@@ -15,5 +15,17 @@ namespace flooding_service.Mappers
             }
         }
 
+        public static string WhereIsTheFloodingComingFromToReadableText(this string value)
+        {
+            switch (value)
+            {
+                case "riverOrStream":
+                    return "River or stream";
+                case "culvert":
+                    return "Culverted watercourse";
+                default:
+                    return value;
+            }
+        }
     }
 }
