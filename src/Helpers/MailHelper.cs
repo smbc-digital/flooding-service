@@ -27,7 +27,7 @@ namespace flooding_service.Helpers
 
         public async Task SendEmail(FloodingRequest floodingRequest, string caseReference)
         {
-            if(string.IsNullOrEmpty(floodingRequest.Reporter.EmailAddress))
+            if (string.IsNullOrEmpty(floodingRequest.Reporter.EmailAddress))
                 return;
 
             EMailTemplate template;
@@ -37,6 +37,7 @@ namespace flooding_service.Helpers
             {
                 case "pavement":
                 case "road":
+                case "parkOrFootpath":
                     template = EMailTemplate.ReportAFloodPublicSpaces;
                     break;
                 default:
@@ -66,7 +67,6 @@ namespace flooding_service.Helpers
                     _logger.LogError($"MailHelper:: SendMail:: Email failed to send with exception: {ex.Message}");
                 }
             }
-            
         }
     }
 }
