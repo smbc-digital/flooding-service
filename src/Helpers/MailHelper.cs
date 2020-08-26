@@ -43,6 +43,9 @@ namespace flooding_service.Helpers
                 case "privateLand":
                     template = EMailTemplate.ReportAFloodPrivateSpaces;
                     break;
+                case "highWaterLevels":
+                    template = EMailTemplate.ReportAFloodHighWaterLevels;
+                    break;
                 default:
                     templateNotFound = true;
                     template = EMailTemplate.BaseTemplate;

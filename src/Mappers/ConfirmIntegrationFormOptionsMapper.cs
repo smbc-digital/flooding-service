@@ -9,16 +9,22 @@ namespace flooding_service.Mappers
     {
         public static FloodingConfiguration ToConfig(this FloodingRequest request, ConfirmAttributeFormOptions attributesFormOptions, VerintOptions verintOptions)
         {
-            var verintConfig = verintOptions.Options.First(_ => _.Type.Equals(request.WhereIsTheFlood));
+            var verintConfig = request.WhatDoYouWantToReport.Equals("flood")
+                ? verintOptions.Options.First(_ => _.Type.Equals(request.WhereIsTheFlood))
+                : verintOptions.Options.First(_ => _.Type.Equals(request.WhatDoYouWantToReport));
 
             var formOptions = new ConfirmIntegrationFormOptions
             {
-                FloodingSourceReported = attributesFormOptions.FloodingSourceReported.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFloodingComingFrom))?.Value ?? string.Empty,
                 EventId = verintConfig.EventCode,
                 ClassCode = verintConfig.ClassCode,
                 ServiceCode = verintConfig.ServiceCode,
                 SubjectCode = verintConfig.SubjectCode
             };
+
+            if (request.WhatDoYouWantToReport.Equals("flood"))
+                formOptions.FloodingSourceReported =
+                    attributesFormOptions.FloodingSourceReported.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFloodingComingFrom))?.Value
+                    ?? string.Empty;
 
             if (!request.DidNotUseMap)
             {
