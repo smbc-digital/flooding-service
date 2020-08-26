@@ -33,24 +33,28 @@ namespace flooding_service.Helpers
             EMailTemplate template;
             var templateNotFound = false;
 
-            switch (floodingRequest.WhereIsTheFlood)
+            if (floodingRequest.WhatDoYouWantToReport.Equals("highWaterLevels"))
             {
-                case "pavement":
-                case "road":
-                case "parkOrFootpath":
-                    template = EMailTemplate.ReportAFloodPublicSpaces;
-                    break;
-                case "privateLand":
-                    template = EMailTemplate.ReportAFloodPrivateSpaces;
-                    break;
-                case "highWaterLevels":
-                    template = EMailTemplate.ReportAFloodHighWaterLevels;
-                    break;
-                default:
-                    templateNotFound = true;
-                    template = EMailTemplate.BaseTemplate;
-                    _logger.LogWarning($"MailHelper:: SendEmail:: Email not sent, no email template found for {floodingRequest.WhereIsTheFlood} journey");
-                    break;
+                template = EMailTemplate.ReportAFloodHighWaterLevels;
+            }
+            else
+            {
+                switch (floodingRequest.WhereIsTheFlood)
+                {
+                    case "pavement":
+                    case "road":
+                    case "parkOrFootpath":
+                        template = EMailTemplate.ReportAFloodPublicSpaces;
+                        break;
+                    case "privateLand":
+                        template = EMailTemplate.ReportAFloodPrivateSpaces;
+                        break;
+                    default:
+                        templateNotFound = true;
+                        template = EMailTemplate.BaseTemplate;
+                        _logger.LogWarning($"MailHelper:: SendEmail:: Email not sent, no email template found for {floodingRequest.WhereIsTheFlood} journey");
+                        break;
+                }
             }
 
             if (!templateNotFound)
