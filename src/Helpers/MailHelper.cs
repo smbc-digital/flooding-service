@@ -40,6 +40,9 @@ namespace flooding_service.Helpers
                 case "parkOrFootpath":
                     template = EMailTemplate.ReportAFloodPublicSpaces;
                     break;
+                case "privateLand":
+                    template = EMailTemplate.ReportAFloodPrivateSpaces;
+                    break;
                 default:
                     templateNotFound = true;
                     template = EMailTemplate.BaseTemplate;
