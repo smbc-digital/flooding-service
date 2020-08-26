@@ -28,6 +28,7 @@ namespace flooding_service_tests.Helpers
             var floodingRequest = new FloodingRequest
             {
                 WhereIsTheFlood = "pavement",
+                WhatDoYouWantToReport = "flood",
                 Reporter = new ContactDetails
                 {
                     EmailAddress = "EmailAddress"
@@ -48,6 +49,7 @@ namespace flooding_service_tests.Helpers
             var floodingRequest = new FloodingRequest
             {
                 WhereIsTheFlood = "non-existant journey",
+                WhatDoYouWantToReport = "flood",
                 Reporter = new ContactDetails
                 {
                     EmailAddress = "EmailAddress"
