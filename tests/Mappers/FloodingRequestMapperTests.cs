@@ -85,11 +85,18 @@ namespace flooding_service_tests.Mappers
                 Name = "street, place"
             };
 
+            var addressResult = new StockportGovUK.NetStandard.Models.Verint.Address
+            {
+                USRN = "123456",
+                Reference = "reference",
+                Description = "description"
+            };
+
             var expectedDescription =
                 "Where is the flooding coming from: river\r\nWhere is the flood: On a pavement\r\nBlocking the pavement: yes\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
 
             // Act
-            var result = request.ToCase(_floodingPavementConfiguration, streetResult);
+            var result = request.ToCase(_floodingPavementConfiguration, streetResult, addressResult);
 
             // Assert
             Assert.Equal(2002592, result.EventCode);
@@ -126,16 +133,18 @@ namespace flooding_service_tests.Mappers
                 TellUsABoutTheFlood = "It's a flood"
             };
 
-            var addressSearchResult = new AddressSearchResult
+            var addressResult = new StockportGovUK.NetStandard.Models.Verint.Address
             {
-                
+                USRN = "123456",
+                Reference = "reference",
+                Description = "description"
             };
 
             var expectedDescription =
                 "Where is the flooding coming from: river\r\nWhere is the flood: home\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
 
             // Act
-            var result = request.ToCase(_floodingHomeConfiguration, It.IsAny<AddressSearchResult>());
+            var result = request.ToCase(_floodingHomeConfiguration, It.IsAny<AddressSearchResult>(), addressResult);
 
             // Assert
             Assert.Equal(2009484, result.EventCode);
@@ -180,11 +189,18 @@ namespace flooding_service_tests.Mappers
                 Name = "street, place"
             };
 
+            var addressResult = new StockportGovUK.NetStandard.Models.Verint.Address
+            {
+                USRN = "123456",
+                Reference = "reference",
+                Description = "description"
+            };
+
             var expectedDescription =
                 "Where is the flooding coming from: river\r\nWhere is the flood: On a road\r\nBlocking the road: no\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
 
             // Act
-            var result = request.ToCase(_floodingRoadConfiguration, streetResult);
+            var result = request.ToCase(_floodingRoadConfiguration, streetResult, addressResult);
 
             // Assert
             Assert.Equal(2002695, result.EventCode);
