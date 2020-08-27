@@ -115,10 +115,20 @@ namespace flooding_service_tests.Mappers
                     FirstName = "FirstName",
                     LastName = "LastName",
                     PhoneNumber = "PhoneNumber",
-                    EmailAddress = "EmailAddress"
+                    EmailAddress = "EmailAddress",
+                    Address = new Address
+                    {
+                        PlaceRef = "123456",
+                        SelectedAddress = "SelectedAddress"
+                    }
                 },
                 HowWouldYouLikeToBeContacted = "phone",
                 TellUsABoutTheFlood = "It's a flood"
+            };
+
+            var addressSearchResult = new AddressSearchResult
+            {
+                
             };
 
             var expectedDescription =
@@ -131,8 +141,8 @@ namespace flooding_service_tests.Mappers
             Assert.Equal(2009484, result.EventCode);
             Assert.Equal(_floodingHomeConfiguration.VerintOption.Classification, result.Classification);
             Assert.Equal(_floodingHomeConfiguration.VerintOption.EventTitle, result.EventTitle);
-            Assert.Equal(ConfirmConstants.Description, result.Street.Description);
-            Assert.Equal(ConfirmConstants.USRN, result.Street.USRN);
+            Assert.Equal(request.Reporter.Address.SelectedAddress, result.Street.Description);
+            Assert.Equal(request.Reporter.Address.PlaceRef, result.Street.USRN);
             Assert.Equal(expectedDescription, result.Description);
         }
 

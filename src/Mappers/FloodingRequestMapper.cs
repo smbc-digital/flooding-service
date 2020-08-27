@@ -35,22 +35,37 @@ namespace flooding_service.Mappers
 
             if (floodingRequest.DidNotUseMap)
             {
-                crmCase.Street = new Street
-                {
-                    USRN = ConfirmConstants.USRN,
-                    Description = ConfirmConstants.Description,
-                    Reference = ConfirmConstants.USRN
-                };
-            }
-            else
-            {
                 crmCase.AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Street;
                 crmCase.Street = new Street
                 {
                     USRN = streetResult.USRN,
-                    Description = streetResult.Name,
-                    Reference = string.IsNullOrEmpty(streetResult.UniqueId) ? null : streetResult.UniqueId
+                    Reference = streetResult.UniqueId,
+                    Description = floodingRequest.Reporter.Address.SelectedAddress
                 };
+
+                crmCase.FurtherLocationInformation = floodingRequest.Reporter.Address.SelectedAddress;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(floodingRequest.Map.Street))
+                {
+                    crmCase.Street = new Street
+                    {
+                        USRN = ConfirmConstants.USRN,
+                        Description = ConfirmConstants.Description,
+                        Reference = ConfirmConstants.USRN
+                    };
+                }
+                else
+                {
+                    crmCase.AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Street;
+                    crmCase.Street = new Street
+                    {
+                        USRN = streetResult.USRN,
+                        Description = streetResult.Name,
+                        Reference = string.IsNullOrEmpty(streetResult.UniqueId) ? null : streetResult.UniqueId
+                    };
+                }    
             }
 
             return crmCase;

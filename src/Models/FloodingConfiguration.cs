@@ -6,6 +6,6 @@ namespace flooding_service.Models
     {
         public Option VerintOption { get; set; }
 
-        public ConfirmIntegrationFormOptions ConfirmIntegrationFormOptions { get; set; }
+        public ConfirmFloodingIntegrationFormOptions ConfirmIntegrationFormOptions { get; set; }
     }
 }

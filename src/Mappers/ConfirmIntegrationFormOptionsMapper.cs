@@ -13,7 +13,7 @@ namespace flooding_service.Mappers
                 ? verintOptions.Options.First(_ => _.Type.Equals(request.WhereIsTheFlood))
                 : verintOptions.Options.First(_ => _.Type.Equals(request.WhatDoYouWantToReport));
 
-            var formOptions = new ConfirmIntegrationFormOptions
+            var formOptions = new ConfirmFloodingIntegrationFormOptions
             {
                 EventId = verintConfig.EventCode,
                 ClassCode = verintConfig.ClassCode,
@@ -25,6 +25,28 @@ namespace flooding_service.Mappers
                 formOptions.FloodingSourceReported =
                     attributesFormOptions.FloodingSourceReported.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFloodingComingFrom))?.Value
                     ?? string.Empty;
+
+            if (request.WhereIsTheFlood.Equals("home"))
+            {
+                formOptions.DomesticOrCommercial =
+                    attributesFormOptions.CommercialOrDomestic.First(_ => _.Type.Equals("home")).Value;
+
+                if (request.WhereInThePropertyIsTheFlood.Equals("garage"))
+                {
+                    formOptions.LocationOfFlooding =
+                        attributesFormOptions.FloodLocationInProperty.First(_ =>
+                            _.Type.Equals(request.IsTheGarageConnectedToYourHome)).Value;
+                }
+                else
+                {
+                    formOptions.LocationOfFlooding = attributesFormOptions.FloodLocationInProperty
+                        .First(_ => _.Type.Equals(request.WhereInThePropertyIsTheFlood)).Value;
+                }
+            }
+
+            if (request.WhereIsTheFlood.Equals("business"))
+                formOptions.DomesticOrCommercial =
+                    attributesFormOptions.CommercialOrDomestic.First(_ => _.Type.Equals("business")).Value;
 
             if (!request.DidNotUseMap)
             {

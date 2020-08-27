@@ -51,6 +51,7 @@ namespace flooding_service.Services
             try
             {
                 var streetResult = request.DidNotUseMap ? null : await _streetHelper.GetStreetUniqueId(request.Map);
+                var addressResult = !request.DidNotUseMap ? 
 
                 //if (!request.DidNotUseMap)
                 //{

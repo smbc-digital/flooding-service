@@ -59,6 +59,27 @@ namespace flooding_service_tests.Mappers
                         Type = "culverted",
                         Value = "CULV"
                     }
+                },
+                FloodLocationInProperty = new List<Config>
+                {
+                    new Config
+                    {
+                        Type = "cellarOrBasement",
+                        Value = "BAS"
+                    },
+                    new Config
+                    {
+                        Type = "yes",
+                        Value = "GARA"
+                    }
+                },
+                CommercialOrDomestic = new List<Config>
+                {
+                    new Config
+                    {
+                        Type = "home",
+                        Value = "DOM"
+                    }
                 }
             };
         }
@@ -97,7 +118,8 @@ namespace flooding_service_tests.Mappers
             {
                 WhereIsTheFlood = "home",
                 WhereIsTheFloodingComingFrom = "river",
-                WhatDoYouWantToReport = "flood"
+                WhatDoYouWantToReport = "flood",
+                WhereInThePropertyIsTheFlood = "cellarOrBasement",
             };
 
             // Act
