@@ -92,7 +92,7 @@ namespace flooding_service_tests.Mappers
             };
 
             var expectedDescription =
-                "Where is the flooding coming from: river\r\nWhere is the flood: On a pavement\r\nBlocking the pavement: yes\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
+                "Where is the flood coming from: river\r\nWhere is the flood: On a pavement\r\nBlocking the pavement: yes\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
 
             // Act
             var result = request.ToCase(_floodingPavementConfiguration, streetResult);
@@ -140,7 +140,7 @@ namespace flooding_service_tests.Mappers
             };
 
             var expectedDescription =
-                "Where is the flooding coming from: river\r\nWhere is the flood: In a home\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
+                "Where is the flood coming from: river\r\nWhere is the flood: In a home\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
 
             // Act
             var result = request.ToCase(_floodingHomeConfiguration, streetResult);
@@ -189,7 +189,7 @@ namespace flooding_service_tests.Mappers
             };
 
             var expectedDescription =
-                "Where is the flooding coming from: river\r\nWhere is the flood: On a road\r\nBlocking the road: no\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
+                "Where is the flood coming from: river\r\nWhere is the flood: On a road\r\nBlocking the road: no\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
 
             // Act
             var result = request.ToCase(_floodingRoadConfiguration, streetResult);
