@@ -69,6 +69,11 @@ namespace flooding_service_tests.Mappers
                     },
                     new Config
                     {
+                        Type = "driveway",
+                        Value = "DRV"
+                    },
+                    new Config
+                    {
                         Type = "yes",
                         Value = "GARA"
                     }
@@ -157,6 +162,63 @@ namespace flooding_service_tests.Mappers
             Assert.Equal("road", result.VerintOption.Type);
             Assert.Equal("lat", result.ConfirmIntegrationFormOptions.YCoordinate);
             Assert.Equal("lng", result.ConfirmIntegrationFormOptions.XCoordinate);
+        }
+
+                [Fact]
+        public void ToConfirmFormOptions_ShouldMapConfigOptions_WhenHomeJourney_AndNotInGarage()
+        {
+            // Arrange
+            var request = new FloodingRequest
+            {
+                WhereIsTheFlood = "home",
+                WhereIsTheFloodingComingFrom = "river",
+                WhatDoYouWantToReport = "flood",
+                WhereInThePropertyIsTheFlood = "driveway",
+                Map = new Map
+                {
+                    Lat = "lat",
+                    Lng = "lng",
+                    Street = "street"
+                }
+            };
+
+            // Act
+            var result = request.ToConfig(_confirmAttributeFormOptions, _verintOptions);
+
+            // Assert
+            Assert.Equal("RIV", result.ConfirmIntegrationFormOptions.FloodingSourceReported);
+            Assert.Equal("DRV", result.ConfirmIntegrationFormOptions.LocationOfFlooding);
+            Assert.Equal("DOM", result.ConfirmIntegrationFormOptions.DomesticOrCommercial);
+            Assert.Equal("home", result.VerintOption.Type);
+        }
+
+        [Fact]
+        public void ToConfirmFormOptions_ShouldMapConfigOptions_WhenHomeJourney_AndInsideGarage()
+        {
+            // Arrange
+            var request = new FloodingRequest
+            {
+                WhereIsTheFlood = "home",
+                WhereIsTheFloodingComingFrom = "river",
+                WhatDoYouWantToReport = "flood",
+                WhereInThePropertyIsTheFlood = "garage",
+                IsTheGarageConnectedToYourHome = "yes",
+                Map = new Map
+                {
+                    Lat = "lat",
+                    Lng = "lng",
+                    Street = "street"
+                }
+            };
+
+            // Act
+            var result = request.ToConfig(_confirmAttributeFormOptions, _verintOptions);
+
+            // Assert
+            Assert.Equal("RIV", result.ConfirmIntegrationFormOptions.FloodingSourceReported);
+            Assert.Equal("GARA", result.ConfirmIntegrationFormOptions.LocationOfFlooding);
+            Assert.Equal("DOM", result.ConfirmIntegrationFormOptions.DomesticOrCommercial);
+            Assert.Equal("home", result.VerintOption.Type);
         }
     }
 }
