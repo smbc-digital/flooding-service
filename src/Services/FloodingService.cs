@@ -50,8 +50,9 @@ namespace flooding_service.Services
         {
             try
             {
-                var streetResult = request.DidNotUseMap ? null : await _streetHelper.GetStreetUniqueId(request.Map);
-                var addressResult = request.DidNotUseMap ? await _streetHelper.GetStreetDetails(request.Reporter.Address) : null;
+                var streetResult = request.DidNotUseMap 
+                    ? await _streetHelper.GetStreetDetails(request.Reporter.Address) 
+                    : await _streetHelper.GetStreetUniqueId(request.Map);
 
                 //if (!request.DidNotUseMap)
                 //{
@@ -59,7 +60,7 @@ namespace flooding_service.Services
                 //}
 
                 var configuration = request.ToConfig(_confirmAttributeFormOptions.Value, _verintOptions.Value);
-                var crmCase = request.ToCase(configuration, streetResult, addressResult);
+                var crmCase = request.ToCase(configuration, streetResult);
                 var verintRequest = crmCase.ToConfirmIntegrationFormCase(configuration.ConfirmIntegrationFormOptions);
 
                 var caseResult = await _verintServiceGateway.CreateVerintOnlineFormCase(verintRequest);

@@ -11,7 +11,7 @@ namespace flooding_service.Helpers
     {
         Task<AddressSearchResult> GetStreetUniqueId(Map map);
 
-        Task<StockportGovUK.NetStandard.Models.Verint.Address> GetStreetDetails(Address address);
+        Task<AddressSearchResult> GetStreetDetails(Address address);
     }
 
     public class StreetHelper : IStreetHelper
@@ -34,7 +34,7 @@ namespace flooding_service.Helpers
             if (streetResponse?.ResponseContent != null)
                 return streetResponse.ResponseContent.FirstOrDefault();
 
-            _logger.LogWarning($"FloodingService:: StreetHelper:: GetStreetUniqueId:: No street found with USRN: {streetUsrn}, returned status code: {streetResponse.StatusCode}");
+            _logger.LogWarning($"StreetHelper:: GetStreetUniqueId:: No street found with USRN: {streetUsrn}, returned status code: {streetResponse.StatusCode}");
             return new AddressSearchResult
             {
                 USRN = streetUsrn,
@@ -42,23 +42,21 @@ namespace flooding_service.Helpers
             };
         }
 
-        public async Task<StockportGovUK.NetStandard.Models.Verint.Address> GetStreetDetails(Address address)
+        public async Task<AddressSearchResult> GetStreetDetails(Address address)
         {
             var addressResponse = await _verintServiceGateway.GetPropertyByUprn(address.PlaceRef);
 
-            if (addressResponse?.ResponseContent != null)
-                return new StockportGovUK.NetStandard.Models.Verint.Address
-                {
-                    USRN = addressResponse.ResponseContent.USRN,
-                    Description = address.SelectedAddress,
-                    UPRN = address.PlaceRef
-                };
+            if (addressResponse?.ResponseContent != null){
+                var streetResponse = await _verintServiceGateway.GetStreetByUsrn(addressResponse.ResponseContent.USRN);
 
-            _logger.LogWarning($"FloodingService:: StreetHelper:: GetStreetDetails:: No address found with UPRN: {address.PlaceRef}, returned status code: {addressResponse.StatusCode}");
-            return new StockportGovUK.NetStandard.Models.Verint.Address
+                return streetResponse.ResponseContent.FirstOrDefault();
+            }
+
+            _logger.LogWarning($"StreetHelper:: GetStreetDetails:: No address found with UPRN: {address.PlaceRef}, returned status code: {addressResponse.StatusCode}");
+            return new AddressSearchResult
             {
-                Description = address.SelectedAddress,
-                UPRN = address.PlaceRef
+                Name = address.SelectedAddress,
+                USRN = address.PlaceRef
             };
         }
     }
