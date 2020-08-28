@@ -14,6 +14,8 @@ namespace flooding_service.Extensions
                     return "In a park or public footpath";
                 case "privateLand":
                     return "On private land";
+                case "home":
+                    return "In a home";
                 default:
                     return value;
             }

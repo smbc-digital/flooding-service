@@ -9,9 +9,8 @@ namespace flooding_service.Mappers
     {
         public static FloodingConfiguration ToConfig(this FloodingRequest request, ConfirmAttributeFormOptions attributesFormOptions, VerintOptions verintOptions)
         {
-            var verintConfig = request.WhatDoYouWantToReport.Equals("flood")
-                ? verintOptions.Options.First(_ => _.Type.Equals(request.WhereIsTheFlood))
-                : verintOptions.Options.First(_ => _.Type.Equals(request.WhatDoYouWantToReport));
+            var verintConfigValue = request.WhatDoYouWantToReport.Equals("flood") ? request.WhereIsTheFlood : request.WhatDoYouWantToReport;
+            var verintConfig = verintOptions.Options.First(_ => _.Type.Equals(verintConfigValue));
 
             var formOptions = new ConfirmFloodingIntegrationFormOptions
             {
@@ -21,16 +20,11 @@ namespace flooding_service.Mappers
                 SubjectCode = verintConfig.SubjectCode
             };
 
-            if (request.WhatDoYouWantToReport.Equals("flood"))
-                formOptions.FloodingSourceReported =
-                    attributesFormOptions.FloodingSourceReported.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFloodingComingFrom))?.Value
-                    ?? string.Empty;
+            formOptions.FloodingSourceReported = attributesFormOptions.FloodingSourceReported.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFloodingComingFrom))?.Value ?? string.Empty;
+            formOptions.DomesticOrCommercial = attributesFormOptions.CommercialOrDomestic.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFlood))?.Value ?? string.Empty;
 
             if (request.WhereIsTheFlood.Equals("home"))
             {
-                formOptions.DomesticOrCommercial =
-                    attributesFormOptions.CommercialOrDomestic.First(_ => _.Type.Equals("home")).Value;
-
                 if (request.WhereInThePropertyIsTheFlood.Equals("garage"))
                 {
                     formOptions.LocationOfFlooding =
@@ -43,10 +37,6 @@ namespace flooding_service.Mappers
                         .First(_ => _.Type.Equals(request.WhereInThePropertyIsTheFlood)).Value;
                 }
             }
-
-            if (request.WhereIsTheFlood.Equals("business"))
-                formOptions.DomesticOrCommercial =
-                    attributesFormOptions.CommercialOrDomestic.First(_ => _.Type.Equals("business")).Value;
 
             if (!request.DidNotUseMap)
             {

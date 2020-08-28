@@ -24,7 +24,7 @@ namespace flooding_service.Mappers
                 EventCode = floodingConfiguration.VerintOption.EventCode,
                 Classification = floodingConfiguration.VerintOption.Classification,
                 EventTitle = floodingConfiguration.VerintOption.EventTitle,
-                Customer = new Customer 
+                Customer = new Customer
                 {
                     Forename = floodingRequest.Reporter.FirstName,
                     Surname = floodingRequest.Reporter.LastName,
@@ -67,7 +67,7 @@ namespace flooding_service.Mappers
                         Description = streetResult.Name,
                         Reference = string.IsNullOrEmpty(streetResult.UniqueId) ? null : streetResult.UniqueId
                     };
-                }    
+                }
             }
 
             return crmCase;
@@ -82,6 +82,12 @@ namespace flooding_service.Mappers
                 description.Append($"Where is the flooding coming from: {floodingRequest.WhereIsTheFloodingComingFrom.WhereIsTheFloodingComingFromToReadableText()}{Environment.NewLine}")
                     .Append($"Where is the flood: {floodingRequest.WhereIsTheFlood.WhereIsTheFloodToReadableText()}{Environment.NewLine}");
             }
+
+            if(!string.IsNullOrWhiteSpace(floodingRequest.WhereInThePropertyIsTheFlood))
+                description.Append($"Where is the flood: {floodingRequest.WhereInThePropertyIsTheFlood}{Environment.NewLine}");
+
+            if(!string.IsNullOrWhiteSpace(floodingRequest.IsTheGarageConnectedToYourHome))
+                description.Append($"Is the garage connected to your home: {floodingRequest.IsTheGarageConnectedToYourHome}{Environment.NewLine}");
 
             if(!string.IsNullOrWhiteSpace(floodingRequest.IsTheFloodingBlockingTheWholePavementOrCausing))
                 description.Append($"Blocking the pavement: {floodingRequest.IsTheFloodingBlockingTheWholePavementOrCausing}{Environment.NewLine}");
