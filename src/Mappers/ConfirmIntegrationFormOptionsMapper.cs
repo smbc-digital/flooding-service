@@ -38,6 +38,20 @@ namespace flooding_service.Mappers
                 }
             }
 
+            if (request.WhereIsTheFlood.Equals("business"))
+            {
+                if (request.IsTheFloodInsideOrOutsideProperty.Equals("inside"))
+                {
+                    formOptions.LocationOfFlooding = attributesFormOptions.FloodLocationInProperty
+                                            .First(_ => _.Type.Equals(request.WhereInThePropertyIsTheFlood)).Value;
+                }
+                else
+                {
+                    formOptions.LocationOfFlooding = attributesFormOptions.FloodLocationInProperty
+                                            .First(_ => _.Type.Equals("garden")).Value;
+                }
+            }
+
             if (!request.DidNotUseMap)
             {
                 formOptions.XCoordinate = request.Map.Lng;

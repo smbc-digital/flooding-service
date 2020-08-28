@@ -27,6 +27,7 @@ namespace flooding_service_tests.Helpers
         [InlineData(EMailTemplate.ReportAFloodPublicSpaces, "road")]
         [InlineData(EMailTemplate.ReportAFloodPublicSpaces, "parkOrFootpath")]
         [InlineData(EMailTemplate.ReportAFloodPrivateSpaces, "privateLand")]
+        [InlineData(EMailTemplate.ReportAFloodPrivateSpaces, "business")]
         [InlineData(EMailTemplate.ReportAFloodPrivateSpaces, "home")]
         [InlineData(EMailTemplate.ReportAFloodHighWaterLevels, "highWaterLevels", "highWaterLevels")]
         public async Task SendEmail_ShouldCallMailingServiceGateway_WithCorrectEmailTemplate_ForJourney(EMailTemplate emailTemplate, string journey, string whatToReport = "flood")

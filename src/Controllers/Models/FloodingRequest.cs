@@ -9,6 +9,7 @@ namespace flooding_service.Controllers.Models
         public string WhereIsTheFlood { get; set; }
         public string IsTheFloodingBlockingTheWholePavementOrCausing { get; set; }
         public string IsTheFloodingBlockingTheWholeRoadOrCausing { get; set; }
+        public string IsTheFloodInsideOrOutsideProperty { get; set; }
         public string WhereInThePropertyIsTheFlood { get; set; }
         public string IsTheGarageConnectedToYourHome { get; set; }
         public Map Map { get; set; }

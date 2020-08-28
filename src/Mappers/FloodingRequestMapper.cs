@@ -81,8 +81,11 @@ namespace flooding_service.Mappers
                     .Append($"Where is the flood: {floodingRequest.WhereIsTheFlood.WhereIsTheFloodToReadableText()}{Environment.NewLine}");
             }
 
+            if(!string.IsNullOrWhiteSpace(floodingRequest.IsTheFloodInsideOrOutsideProperty))
+                description.Append($"Is the flood inside or outside the property: {floodingRequest.IsTheFloodInsideOrOutsideProperty}{Environment.NewLine}");
+    
             if(!string.IsNullOrWhiteSpace(floodingRequest.WhereInThePropertyIsTheFlood))
-                description.Append($"Where is the flood: {floodingRequest.WhereInThePropertyIsTheFlood}{Environment.NewLine}");
+                description.Append($"Where is the flood: {floodingRequest.WhereInThePropertyIsTheFlood.WhereInThePropertyIsTheFloodToReadableText()}{Environment.NewLine}");
 
             if(!string.IsNullOrWhiteSpace(floodingRequest.IsTheGarageConnectedToYourHome))
                 description.Append($"Is the garage connected to your home: {floodingRequest.IsTheGarageConnectedToYourHome}{Environment.NewLine}");

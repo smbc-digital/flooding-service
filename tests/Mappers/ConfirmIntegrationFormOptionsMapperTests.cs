@@ -19,7 +19,7 @@ namespace flooding_service_tests.Mappers
                 {
                     new Option
                     {
-                        EventCode = 2002592,
+                        EventCode = 111111,
                         Type = "pavement",
                         ServiceCode = "HWAY",
                         SubjectCode = "CWFD",
@@ -27,7 +27,7 @@ namespace flooding_service_tests.Mappers
                     },
                     new Option
                     {
-                        EventCode = 0013254,
+                        EventCode = 222222,
                         Type = "home",
                         ServiceCode = "HWAY",
                         SubjectCode = "CWFD",
@@ -35,8 +35,17 @@ namespace flooding_service_tests.Mappers
                     },
                     new Option
                     {
-                        EventCode = 1111111,
+                        EventCode = 333333,
                         Type = "road",
+                        ServiceCode = "HWAY",
+                        SubjectCode = "CWFD",
+                        ClassCode = "SERV"
+
+                    },
+                    new Option
+                    {
+                        EventCode = 4444444,
+                        Type = "business",
                         ServiceCode = "HWAY",
                         SubjectCode = "CWFD",
                         ClassCode = "SERV"
@@ -76,6 +85,11 @@ namespace flooding_service_tests.Mappers
                     {
                         Type = "yes",
                         Value = "GARA"
+                    },
+                    new Config
+                    {
+                        Type = "garden",
+                        Value = "GAR"
                     }
                 },
                 CommercialOrDomestic = new List<Config>
@@ -84,6 +98,11 @@ namespace flooding_service_tests.Mappers
                     {
                         Type = "home",
                         Value = "DOM"
+                    },
+                    new Config
+                    {
+                        Type = "business",
+                        Value = "COM"
                     }
                 }
             };
@@ -173,13 +192,7 @@ namespace flooding_service_tests.Mappers
                 WhereIsTheFlood = "home",
                 WhereIsTheFloodingComingFrom = "river",
                 WhatDoYouWantToReport = "flood",
-                WhereInThePropertyIsTheFlood = "driveway",
-                Map = new Map
-                {
-                    Lat = "lat",
-                    Lng = "lng",
-                    Street = "street"
-                }
+                WhereInThePropertyIsTheFlood = "driveway"
             };
 
             // Act
@@ -190,6 +203,8 @@ namespace flooding_service_tests.Mappers
             Assert.Equal("DRV", result.ConfirmIntegrationFormOptions.LocationOfFlooding);
             Assert.Equal("DOM", result.ConfirmIntegrationFormOptions.DomesticOrCommercial);
             Assert.Equal("home", result.VerintOption.Type);
+            Assert.Null(result.ConfirmIntegrationFormOptions.XCoordinate);
+            Assert.Null(result.ConfirmIntegrationFormOptions.YCoordinate);
         }
 
         [Fact]
@@ -202,13 +217,7 @@ namespace flooding_service_tests.Mappers
                 WhereIsTheFloodingComingFrom = "river",
                 WhatDoYouWantToReport = "flood",
                 WhereInThePropertyIsTheFlood = "garage",
-                IsTheGarageConnectedToYourHome = "yes",
-                Map = new Map
-                {
-                    Lat = "lat",
-                    Lng = "lng",
-                    Street = "street"
-                }
+                IsTheGarageConnectedToYourHome = "yes"
             };
 
             // Act
@@ -219,6 +228,57 @@ namespace flooding_service_tests.Mappers
             Assert.Equal("GARA", result.ConfirmIntegrationFormOptions.LocationOfFlooding);
             Assert.Equal("DOM", result.ConfirmIntegrationFormOptions.DomesticOrCommercial);
             Assert.Equal("home", result.VerintOption.Type);
+            Assert.Null(result.ConfirmIntegrationFormOptions.XCoordinate);
+            Assert.Null(result.ConfirmIntegrationFormOptions.YCoordinate);
+        }
+
+        [Fact]
+        public void ToConfirmFormOptions_ShouldMapConfigOptions_WhenBusinessJourney_Outside()
+        {
+            // Arrange
+            var request = new FloodingRequest
+            {
+                WhereIsTheFlood = "business",
+                WhereIsTheFloodingComingFrom = "river",
+                WhatDoYouWantToReport = "flood",
+                IsTheFloodInsideOrOutsideProperty = "outside",
+            };
+
+            // Act
+            var result = request.ToConfig(_confirmAttributeFormOptions, _verintOptions);
+
+            // Assert
+            Assert.Equal("RIV", result.ConfirmIntegrationFormOptions.FloodingSourceReported);
+            Assert.Equal("GAR", result.ConfirmIntegrationFormOptions.LocationOfFlooding);
+            Assert.Equal("COM", result.ConfirmIntegrationFormOptions.DomesticOrCommercial);
+            Assert.Equal("business", result.VerintOption.Type);
+            Assert.Null(result.ConfirmIntegrationFormOptions.XCoordinate);
+            Assert.Null(result.ConfirmIntegrationFormOptions.YCoordinate);
+        }
+
+        [Fact]
+        public void ToConfirmFormOptions_ShouldMapConfigOptions_WhenBusinessJourney_Inside()
+        {
+            // Arrange
+            var request = new FloodingRequest
+            {
+                WhereIsTheFlood = "business",
+                WhereIsTheFloodingComingFrom = "river",
+                WhatDoYouWantToReport = "flood",
+                IsTheFloodInsideOrOutsideProperty = "inside",
+                WhereInThePropertyIsTheFlood = "cellarOrBasement"
+            };
+
+            // Act
+            var result = request.ToConfig(_confirmAttributeFormOptions, _verintOptions);
+
+            // Assert
+            Assert.Equal("RIV", result.ConfirmIntegrationFormOptions.FloodingSourceReported);
+            Assert.Equal("BAS", result.ConfirmIntegrationFormOptions.LocationOfFlooding);
+            Assert.Equal("COM", result.ConfirmIntegrationFormOptions.DomesticOrCommercial);
+            Assert.Equal("business", result.VerintOption.Type);
+            Assert.Null(result.ConfirmIntegrationFormOptions.XCoordinate);
+            Assert.Null(result.ConfirmIntegrationFormOptions.YCoordinate);
         }
     }
 }

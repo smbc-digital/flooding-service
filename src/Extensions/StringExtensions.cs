@@ -16,6 +16,27 @@ namespace flooding_service.Extensions
                     return "On private land";
                 case "home":
                     return "In a home";
+                case "business":
+                    return "In a business";
+                default:
+                    return value;
+            }
+        }
+
+        public static string WhereInThePropertyIsTheFloodToReadableText(this string value)
+        {
+            switch (value)
+            {
+                case "cellarOrBasement":
+                    return "Cellar or basement";
+                case "garage":
+                    return "Garage";
+                case "garden":
+                    return "Garden";
+                case "groundFloor":
+                    return "Ground floor";
+                case "driveway":
+                    return "Driveway";
                 default:
                     return value;
             }
