@@ -83,8 +83,8 @@ namespace flooding_service.Services
 
                 var response = JsonConvert.DeserializeObject<MapResponse>(await result.Content.ReadAsStringAsync());
 
-                map.Lat = response.Easting;
-                map.Lng = response.Northing;
+                map.Lat = response.Northing;
+                map.Lng = response.Easting;
 
                 return map;
             }
