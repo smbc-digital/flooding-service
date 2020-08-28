@@ -55,9 +55,7 @@ namespace flooding_service.Services
                     : await _streetHelper.GetStreetUniqueId(request.Map);
 
                 if (!request.DidNotUseMap)
-                {
                    request.Map = await ConvertLatLng(request.Map);
-                }
 
                 var configuration = request.ToConfig(_confirmAttributeFormOptions.Value, _verintOptions.Value);
                 var crmCase = request.ToCase(configuration, streetResult);
@@ -80,7 +78,7 @@ namespace flooding_service.Services
             try
             {
                 var client = new HttpClient();
-                var result = await client.GetAsync($"http://www.bgs.ac.uk/data/webservices/CoordConvert_LL_BNG.cfc?method=LatLongToBNG&lat={map.Lat}&lon={map.Lng}");
+                var result = await client.GetAsync($"http://www.bgs.ac.uk/data/webservices/CoordConvert_LL_BNG.cfc?method=LatLongToBNG&lat={map.Lng}&lon={map.Lat}");
                 _logger.LogWarning($"FloodingService:: ConvertLatLng:: Response is: {JsonConvert.SerializeObject(result)}");
 
                 var response = JsonConvert.DeserializeObject<MapResponse>(await result.Content.ReadAsStringAsync());
