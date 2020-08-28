@@ -10,6 +10,8 @@ namespace flooding_service.Helpers
     public interface IStreetHelper
     {
         Task<AddressSearchResult> GetStreetUniqueId(Map map);
+
+        Task<StockportGovUK.NetStandard.Models.Verint.Address> GetStreetDetails(Address address);
     }
 
     public class StreetHelper : IStreetHelper
@@ -32,11 +34,31 @@ namespace flooding_service.Helpers
             if (streetResponse?.ResponseContent != null)
                 return streetResponse.ResponseContent.FirstOrDefault();
 
-            _logger.LogWarning($"FloodingService:: GetStreetUniqueId:: No street found with USRN: {streetUsrn}, returned status code: {streetResponse.StatusCode}");
+            _logger.LogWarning($"FloodingService:: StreetHelper:: GetStreetUniqueId:: No street found with USRN: {streetUsrn}, returned status code: {streetResponse.StatusCode}");
             return new AddressSearchResult
             {
                 USRN = streetUsrn,
                 Name = streetDescription
+            };
+        }
+
+        public async Task<StockportGovUK.NetStandard.Models.Verint.Address> GetStreetDetails(Address address)
+        {
+            var addressResponse = await _verintServiceGateway.GetPropertyByUprn(address.PlaceRef);
+
+            if (addressResponse?.ResponseContent != null)
+                return new StockportGovUK.NetStandard.Models.Verint.Address
+                {
+                    USRN = addressResponse.ResponseContent.USRN,
+                    Description = address.SelectedAddress,
+                    UPRN = address.PlaceRef
+                };
+
+            _logger.LogWarning($"FloodingService:: StreetHelper:: GetStreetDetails:: No address found with UPRN: {address.PlaceRef}, returned status code: {addressResponse.StatusCode}");
+            return new StockportGovUK.NetStandard.Models.Verint.Address
+            {
+                Description = address.SelectedAddress,
+                UPRN = address.PlaceRef
             };
         }
     }

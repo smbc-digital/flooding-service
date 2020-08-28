@@ -6,6 +6,7 @@ using flooding_service.Extensions;
 using flooding_service.Models;
 using StockportGovUK.NetStandard.Models.Addresses;
 using StockportGovUK.NetStandard.Models.Verint;
+using Address = StockportGovUK.NetStandard.Models.Verint.Address;
 using Street = StockportGovUK.NetStandard.Models.Verint.Street;
 
 namespace flooding_service.Mappers
@@ -15,14 +16,15 @@ namespace flooding_service.Mappers
         public static Case ToCase(
             this FloodingRequest floodingRequest, 
            FloodingConfiguration floodingConfiguration, 
-            AddressSearchResult streetResult)
+            AddressSearchResult streetResult,
+            Address addressResult)
         {
             var crmCase = new Case
             {
                 EventCode = floodingConfiguration.VerintOption.EventCode,
                 Classification = floodingConfiguration.VerintOption.Classification,
                 EventTitle = floodingConfiguration.VerintOption.EventTitle,
-                Customer = new Customer 
+                Customer = new Customer
                 {
                     Forename = floodingRequest.Reporter.FirstName,
                     Surname = floodingRequest.Reporter.LastName,
@@ -35,22 +37,37 @@ namespace flooding_service.Mappers
 
             if (floodingRequest.DidNotUseMap)
             {
-                crmCase.Street = new Street
-                {
-                    USRN = ConfirmConstants.USRN,
-                    Description = ConfirmConstants.Description,
-                    Reference = ConfirmConstants.USRN
-                };
-            }
-            else
-            {
                 crmCase.AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Street;
                 crmCase.Street = new Street
                 {
-                    USRN = streetResult.USRN,
-                    Description = streetResult.Name,
-                    Reference = string.IsNullOrEmpty(streetResult.UniqueId) ? null : streetResult.UniqueId
+                    USRN = addressResult.USRN,
+                    Reference = addressResult.Reference,
+                    Description = floodingRequest.Reporter.Address.SelectedAddress
                 };
+
+                crmCase.FurtherLocationInformation = floodingRequest.Reporter.Address.SelectedAddress;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(floodingRequest.Map.Street))
+                {
+                    crmCase.Street = new Street
+                    {
+                        USRN = ConfirmConstants.USRN,
+                        Description = ConfirmConstants.Description,
+                        Reference = ConfirmConstants.USRN
+                    };
+                }
+                else
+                {
+                    crmCase.AssociatedWithBehaviour = AssociatedWithBehaviourEnum.Street;
+                    crmCase.Street = new Street
+                    {
+                        USRN = streetResult.USRN,
+                        Description = streetResult.Name,
+                        Reference = string.IsNullOrEmpty(streetResult.UniqueId) ? null : streetResult.UniqueId
+                    };
+                }
             }
 
             return crmCase;
@@ -65,6 +82,12 @@ namespace flooding_service.Mappers
                 description.Append($"Where is the flooding coming from: {floodingRequest.WhereIsTheFloodingComingFrom.WhereIsTheFloodingComingFromToReadableText()}{Environment.NewLine}")
                     .Append($"Where is the flood: {floodingRequest.WhereIsTheFlood.WhereIsTheFloodToReadableText()}{Environment.NewLine}");
             }
+
+            if(!string.IsNullOrWhiteSpace(floodingRequest.WhereInThePropertyIsTheFlood))
+                description.Append($"Where is the flood: {floodingRequest.WhereInThePropertyIsTheFlood}{Environment.NewLine}");
+
+            if(!string.IsNullOrWhiteSpace(floodingRequest.IsTheGarageConnectedToYourHome))
+                description.Append($"Is the garage connected to your home: {floodingRequest.IsTheGarageConnectedToYourHome}{Environment.NewLine}");
 
             if(!string.IsNullOrWhiteSpace(floodingRequest.IsTheFloodingBlockingTheWholePavementOrCausing))
                 description.Append($"Blocking the pavement: {floodingRequest.IsTheFloodingBlockingTheWholePavementOrCausing}{Environment.NewLine}");

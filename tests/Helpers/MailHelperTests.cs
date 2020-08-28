@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using StockportGovUK.NetStandard.Gateways.MailingService;
 using StockportGovUK.NetStandard.Models.ContactDetails;
+using StockportGovUK.NetStandard.Models.Enums;
 using StockportGovUK.NetStandard.Models.Mail;
 using Xunit;
 
@@ -21,14 +22,24 @@ namespace flooding_service_tests.Helpers
             _mailHelper = new MailHelper(_mockMailingServiceGateway.Object, _mockLogger.Object);
         }
 
-        [Fact]
-        public async Task SendEmail_ShouldCallMailingServiceGateway()
+        [Theory]
+        [InlineData(EMailTemplate.ReportAFloodPublicSpaces, "pavement")]
+        [InlineData(EMailTemplate.ReportAFloodPublicSpaces, "road")]
+        [InlineData(EMailTemplate.ReportAFloodPublicSpaces, "parkOrFootpath")]
+        [InlineData(EMailTemplate.ReportAFloodPrivateSpaces, "privateLand")]
+        [InlineData(EMailTemplate.ReportAFloodPrivateSpaces, "home")]
+        [InlineData(EMailTemplate.ReportAFloodHighWaterLevels, "highWaterLevels", "highWaterLevels")]
+        public async Task SendEmail_ShouldCallMailingServiceGateway_WithCorrectEmailTemplate_ForJourney(EMailTemplate emailTemplate, string journey, string whatToReport = "flood")
         {
+            var callbackValue = new Mail();
             // Arrange
+            _mockMailingServiceGateway.Setup(_ => _.Send(It.IsAny<Mail>()))
+                .Callback<Mail>(a => callbackValue = a);
+
             var floodingRequest = new FloodingRequest
             {
-                WhereIsTheFlood = "pavement",
-                WhatDoYouWantToReport = "flood",
+                WhereIsTheFlood = journey,
+                WhatDoYouWantToReport = whatToReport,
                 Reporter = new ContactDetails
                 {
                     EmailAddress = "EmailAddress"
@@ -40,6 +51,7 @@ namespace flooding_service_tests.Helpers
 
             // Assert
             _mockMailingServiceGateway.Verify(_ => _.Send(It.IsAny<Mail>()), Times.Once);
+            Assert.Equal(emailTemplate, callbackValue.Template);
         }
 
         [Fact]
