@@ -18,6 +18,8 @@ namespace flooding_service.Extensions
                     return "In a home";
                 case "business":
                     return "In a business";
+                case "none":
+                    return "None of the above";
                 default:
                     return value;
             }

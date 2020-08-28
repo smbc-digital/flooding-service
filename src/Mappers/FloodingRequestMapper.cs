@@ -81,6 +81,10 @@ namespace flooding_service.Mappers
                     .Append($"Where is the flood: {floodingRequest.WhereIsTheFlood.WhereIsTheFloodToReadableText()}{Environment.NewLine}");
             }
 
+            if(floodingRequest.WhereIsTheFlood.Equals("none")){
+                description.Append($"Tell us where the flooding is coming from (optional): {floodingRequest.TellUsWhereTheFloodingIsComingFrom}{Environment.NewLine}");
+            }
+
             if(!string.IsNullOrWhiteSpace(floodingRequest.IsTheFloodInsideOrOutsideProperty))
                 description.Append($"Is the flood inside or outside the property: {floodingRequest.IsTheFloodInsideOrOutsideProperty}{Environment.NewLine}");
     
