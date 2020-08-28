@@ -54,10 +54,10 @@ namespace flooding_service.Services
                     ? await _streetHelper.GetStreetDetails(request.Reporter.Address) 
                     : await _streetHelper.GetStreetUniqueId(request.Map);
 
-                //if (!request.DidNotUseMap)
-                //{
-                //    request.Map = await ConvertLatLng(request.Map);
-                //}
+                if (!request.DidNotUseMap)
+                {
+                   request.Map = await ConvertLatLng(request.Map);
+                }
 
                 var configuration = request.ToConfig(_confirmAttributeFormOptions.Value, _verintOptions.Value);
                 var crmCase = request.ToCase(configuration, streetResult);
