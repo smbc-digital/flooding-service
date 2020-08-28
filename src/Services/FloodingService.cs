@@ -61,7 +61,7 @@ namespace flooding_service.Services
 
                 var configuration = request.ToConfig(_confirmAttributeFormOptions.Value, _verintOptions.Value);
                 var crmCase = request.ToCase(configuration, streetResult);
-                var verintRequest = crmCase.ToConfirmIntegrationFormCase(configuration.ConfirmIntegrationFormOptions);
+                var verintRequest = crmCase.ToConfirmFloodingIntegrationFormCase(configuration.ConfirmIntegrationFormOptions);
 
                 var caseResult = await _verintServiceGateway.CreateVerintOnlineFormCase(verintRequest);
 
