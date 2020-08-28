@@ -77,12 +77,12 @@ namespace flooding_service.Mappers
 
             if (floodingRequest.WhatDoYouWantToReport.Equals("flood"))
             {
-                description.Append($"Where is the flooding coming from: {floodingRequest.WhereIsTheFloodingComingFrom.WhereIsTheFloodingComingFromToReadableText()}{Environment.NewLine}")
+                description.Append($"Where is the flood coming from: {floodingRequest.WhereIsTheFloodingComingFrom.WhereIsTheFloodingComingFromToReadableText()}{Environment.NewLine}")
                     .Append($"Where is the flood: {floodingRequest.WhereIsTheFlood.WhereIsTheFloodToReadableText()}{Environment.NewLine}");
             }
 
             if(floodingRequest.WhereIsTheFlood.Equals("none")){
-                description.Append($"Tell us where the flooding is coming from (optional): {floodingRequest.TellUsWhereTheFloodingIsComingFrom}{Environment.NewLine}");
+                description.Append($"Tell us where the flood is coming from (optional): {floodingRequest.TellUsWhereTheFloodIsComingFrom}{Environment.NewLine}");
             }
 
             if(!string.IsNullOrWhiteSpace(floodingRequest.IsTheFloodInsideOrOutsideProperty))
