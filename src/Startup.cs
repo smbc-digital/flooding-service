@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using flooding_service.Middleware;
 using flooding_service.Utils.HealthChecks;
 using flooding_service.Utils.ServiceCollectionExtensions;
 using Microsoft.AspNetCore.Builder;
@@ -38,6 +39,7 @@ namespace flooding_service
         {
             app.UseExceptionHandler($"/api/v1/error{(env.IsDevelopment() ? "/local" : string.Empty)}");
 
+            app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
