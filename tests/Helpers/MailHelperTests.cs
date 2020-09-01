@@ -30,7 +30,7 @@ namespace flooding_service_tests.Helpers
         [InlineData(EMailTemplate.ReportAFloodPrivateSpaces, "business")]
         [InlineData(EMailTemplate.ReportAFloodPrivateSpaces, "home")]
         [InlineData(EMailTemplate.ReportAFloodHighWaterLevels, "highWaterLevels", "highWaterLevels")]
-        public async Task SendEmail_ShouldCallMailingServiceGateway_WithCorrectEmailTemplate_ForJourney(EMailTemplate emailTemplate, string journey, string whatToReport = "flood")
+        public void SendEmail_ShouldCallMailingServiceGateway_WithCorrectEmailTemplate_ForJourney(EMailTemplate emailTemplate, string journey, string whatToReport = "flood")
         {
             var callbackValue = new Mail();
             // Arrange
@@ -48,7 +48,7 @@ namespace flooding_service_tests.Helpers
             };
 
             // Act
-            await _mailHelper.SendEmail(floodingRequest, "123456");
+            _mailHelper.SendEmail(floodingRequest, "123456");
 
             // Assert
             _mockMailingServiceGateway.Verify(_ => _.Send(It.IsAny<Mail>()), Times.Once);
@@ -56,7 +56,7 @@ namespace flooding_service_tests.Helpers
         }
 
         [Fact]
-        public async Task SendEmail_ShouldNotCallMailingServiceGateway_IfTemplateNotFoundForJourneyType()
+        public void SendEmail_ShouldNotCallMailingServiceGateway_IfTemplateNotFoundForJourneyType()
         {
             // Arrange
             var floodingRequest = new FloodingRequest
@@ -70,7 +70,7 @@ namespace flooding_service_tests.Helpers
             };
 
             // Act
-            await _mailHelper.SendEmail(floodingRequest, "123456");
+            _mailHelper.SendEmail(floodingRequest, "123456");
 
             // Assert
             _mockMailingServiceGateway.Verify(_ => _.Send(It.IsAny<Mail>()), Times.Never);
