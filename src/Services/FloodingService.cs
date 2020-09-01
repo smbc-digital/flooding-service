@@ -77,8 +77,7 @@ namespace flooding_service.Services
         {
             try
             {
-                var client = new HttpClient();
-                var result = await client.GetAsync($"http://www.bgs.ac.uk/data/webservices/CoordConvert_LL_BNG.cfc?method=LatLongToBNG&lat={map.Lat}&lon={map.Lng}");
+                var result = await _gateway.GetAsync($"CoordConvert_LL_BNG.cfc?method=LatLongToBNG&lat={map.Lat}&lon={map.Lng}");
                 _logger.LogWarning($"FloodingService:: ConvertLatLng:: Response is: {JsonConvert.SerializeObject(result)}");
 
                 var response = JsonConvert.DeserializeObject<MapResponse>(await result.Content.ReadAsStringAsync());
