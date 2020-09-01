@@ -81,7 +81,7 @@ namespace flooding_service.Mappers
                     .Append($"Where is the flood: {floodingRequest.WhereIsTheFlood.WhereIsTheFloodToReadableText()}{Environment.NewLine}");
             }
 
-            if(floodingRequest.WhereIsTheFlood.Equals("none")){
+            if(floodingRequest.WhereIsTheFlood.Equals("other")){
                 description.Append($"Tell us where the flood is coming from (optional): {floodingRequest.TellUsWhereTheFloodIsComingFrom}{Environment.NewLine}");
             }
 
