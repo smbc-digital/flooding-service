@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -11,7 +10,7 @@ namespace flooding_service.Helpers
 {
     public interface IMailHelper
     {
-        Task SendEmail(FloodingRequest floodingRequest, string caseReference);
+        void SendEmail(FloodingRequest floodingRequest, string caseReference);
     }
 
     public class MailHelper : IMailHelper
@@ -25,7 +24,7 @@ namespace flooding_service.Helpers
             _logger = logger;
         }
 
-        public async Task SendEmail(FloodingRequest floodingRequest, string caseReference)
+        public void SendEmail(FloodingRequest floodingRequest, string caseReference)
         {
             if (string.IsNullOrEmpty(floodingRequest.Reporter.EmailAddress))
                 return;
@@ -63,7 +62,7 @@ namespace flooding_service.Helpers
             {
                 try
                 {
-                    await _mailingServiceGateway.Send(new Mail
+                    _mailingServiceGateway.Send(new Mail
                     {
                         Payload = JsonConvert.SerializeObject(new
                         {

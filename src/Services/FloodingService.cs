@@ -63,7 +63,7 @@ namespace flooding_service.Services
 
                 var caseResult = await _verintServiceGateway.CreateVerintOnlineFormCase(verintRequest);
 
-                await _mailHelper.SendEmail(request, caseResult.ResponseContent.VerintCaseReference);
+                _mailHelper.SendEmail(request, caseResult.ResponseContent.VerintCaseReference);
 
                 return caseResult.ResponseContent.VerintCaseReference;
             }
