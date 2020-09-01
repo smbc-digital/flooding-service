@@ -75,15 +75,14 @@ namespace flooding_service.Mappers
         {
             var description = new StringBuilder();
 
-            if (floodingRequest.WhatDoYouWantToReport.Equals("flood"))
-            {
-                description.Append($"Where is the flood coming from: {floodingRequest.WhereIsTheFloodingComingFrom.WhereIsTheFloodingComingFromToReadableText()}{Environment.NewLine}")
-                    .Append($"Where is the flood: {floodingRequest.WhereIsTheFlood.WhereIsTheFloodToReadableText()}{Environment.NewLine}");
-            }
+            if (floodingRequest.WhatDoYouWantToReport.Equals("flood") && !floodingRequest.WhereIsTheFloodingComingFrom.Equals("other"))
+                description.Append($"Where is the flood coming from: {floodingRequest.WhereIsTheFloodingComingFrom.WhereIsTheFloodingComingFromToReadableText()}{Environment.NewLine}");
 
-            if(floodingRequest.WhereIsTheFloodingComingFrom.Equals("other")){
+            if(floodingRequest.WhereIsTheFloodingComingFrom.Equals("other"))
                 description.Append($"Tell us where the flood is coming from (optional): {floodingRequest.TellUsWhereTheFloodIsComingFrom}{Environment.NewLine}");
-            }
+
+            if(!string.IsNullOrWhiteSpace(floodingRequest.WhereIsTheFlood))
+                description.Append($"Where is the flood: {floodingRequest.WhereIsTheFlood.WhereIsTheFloodToReadableText()}{Environment.NewLine}");
 
             if(!string.IsNullOrWhiteSpace(floodingRequest.IsTheFloodInsideOrOutsideProperty))
                 description.Append($"Is the flood inside or outside the property: {floodingRequest.IsTheFloodInsideOrOutsideProperty}{Environment.NewLine}");
