@@ -18,8 +18,6 @@ namespace flooding_service.Extensions
                     return "In a home";
                 case "business":
                     return "In a business";
-                case "other":
-                    return "None of the above";
                 default:
                     return value;
             }
@@ -52,6 +50,8 @@ namespace flooding_service.Extensions
                     return "River or stream";
                 case "culvert":
                     return "Culverted watercourse";
+                case "other":
+                    return "None of the above";
                 default:
                     return value;
             }
