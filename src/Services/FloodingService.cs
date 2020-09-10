@@ -57,7 +57,7 @@ namespace flooding_service.Services
 
                 if (!request.DidNotUseMap)
                    request.Map = await ConvertLatLng(request.Map);
-                var floodingLocationConfig = _verintOptions.Value.FloodingLocations.First(_ => _.Type.Equals(request.WhereIsTheFlood));
+                var floodingLocationConfig = _verintOptions.Value.FloodingLocations.FirstOrDefault(_ => _.Type.Equals(request.WhereIsTheFlood));
                 var configuration = request.ToConfig(_confirmAttributeFormOptions.Value, _verintOptions.Value);
                 var crmCase = request.ToCase(configuration, streetResult, floodingLocationConfig);
                 var verintRequest = crmCase.ToConfirmFloodingIntegrationFormCase(configuration.ConfirmIntegrationFormOptions);
