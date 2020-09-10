@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
@@ -56,9 +57,9 @@ namespace flooding_service.Services
 
                 if (!request.DidNotUseMap)
                    request.Map = await ConvertLatLng(request.Map);
-
+                var floodingLocationConfig = _verintOptions.Value.FloodingLocations.First(_ => _.Type.Equals(request.WhereIsTheFlood));
                 var configuration = request.ToConfig(_confirmAttributeFormOptions.Value, _verintOptions.Value);
-                var crmCase = request.ToCase(configuration, streetResult);
+                var crmCase = request.ToCase(configuration, streetResult, floodingLocationConfig);
                 var verintRequest = crmCase.ToConfirmFloodingIntegrationFormCase(configuration.ConfirmIntegrationFormOptions);
 
                 var caseResult = await _verintServiceGateway.CreateVerintOnlineFormCase(verintRequest);

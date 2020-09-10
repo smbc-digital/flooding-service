@@ -7,6 +7,8 @@ namespace flooding_service.Models
         public const string ConfigValue = "VerintOptions";
        
         public List<Option> Options { get; set; }
+
+        public List<Config> FloodingLocations { get; set; }
     }
 
     public class Option
