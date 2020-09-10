@@ -46,7 +46,7 @@ namespace flooding_service_tests.Services
                 PhoneNumber = "01222333333"
             },
             TellUsABoutTheFlood = "it is a flood",
-            WhatDoYouWantToReport = "a flood",
+            WhatDoYouWantToReport = "flood",
             WhereIsTheFlood = "pavement",
             WhereIsTheFloodingComingFrom = "river"
         };
@@ -70,6 +70,27 @@ namespace flooding_service_tests.Services
                             Type = "culverted",
                             Value = "CULV"
                         }
+                    },
+                    CommercialOrDomestic = new List<Config>
+                    {
+                        new Config
+                        {
+                            Type = "home",
+                            Value = "DOM"
+                        },
+                        new Config
+                        {
+                            Type = "business",
+                            Value = "COM"
+                        }
+                    },
+                    FloodLocationInProperty = new List<Config>
+                    {
+                        new Config
+                        {
+                            Type = "yes",
+                            Value = "GARA"
+                        }
                     }
                 });
 
@@ -79,25 +100,25 @@ namespace flooding_service_tests.Services
                 .Returns(new VerintOptions
                 {
                     Options = new List<Option>
-                {
-                    new Option
                     {
-                        EventCode = 2002592,
-                        Type = "pavement",
-                        ServiceCode = "HWAY",
-                        SubjectCode = "CWFD",
-                        ClassCode = "SERV"
-                    },
-                    new Option
-                    {
-                        EventCode = 0013254,
-                        Type = "home",
-                        ServiceCode = "HWAY",
-                        SubjectCode = "CWFD",
-                        ClassCode = "SERV"
+                        new Option
+                        {
+                            EventCode = 2002592,
+                            Type = "pavement",
+                            ServiceCode = "HWAY",
+                            SubjectCode = "CWFD",
+                            ClassCode = "SERV"
+                        },
+                        new Option
+                        {
+                            EventCode = 0013254,
+                            Type = "home",
+                            ServiceCode = "HWAY",
+                            SubjectCode = "CWFD",
+                            ClassCode = "SERV"
 
+                        }
                     }
-                }
                 });
 
             _mockVerintServiceGateway
@@ -113,6 +134,15 @@ namespace flooding_service_tests.Services
 
             _mockStreetHelper
                 .Setup(_ => _.GetStreetUniqueId(It.IsAny<Map>()))
+                .ReturnsAsync(new AddressSearchResult
+                {
+                    UniqueId = "123456",
+                    USRN = "654321",
+                    Name = "TestName"
+                });
+
+            _mockStreetHelper
+                .Setup(_ => _.GetStreetDetails(It.IsAny<Address>()))
                 .ReturnsAsync(new AddressSearchResult
                 {
                     UniqueId = "123456",
@@ -144,8 +174,8 @@ namespace flooding_service_tests.Services
                 _mockLogger.Object);
         }
 
-        [Fact(Skip="use httpClient for debugging")]
-        public async Task CreateCase_ShouldCallStreetHelper_IfMapUsed()
+        [Fact]
+        public async Task CreateCase_ShouldCallStreetHelper_GetStreetUniqueId_IfMapUsed()
         {
             // Act
             await _floodingService.CreateCase(_floodingRequest);
@@ -154,30 +184,31 @@ namespace flooding_service_tests.Services
             _mockStreetHelper.Verify(_ => _.GetStreetUniqueId(It.IsAny<Map>()), Times.Once);
         }
 
-        [Fact(Skip = "use httpClient for debugging")]
-        public async Task CreateCase_ShouldNotCallStreetHelper_IfMapNotUsed()
+        [Fact]
+        public async Task CreateCase_ShouldCallStreetHelper_GetStreetDetails_IfMapNotUsed()
         {
             // Arrange
             var floodingRequest = new FloodingRequest
             {
                 HowWouldYouLikeToBeContacted = "phone",
                 IsTheFloodingBlockingTheWholePavementOrCausing = "yes",
-                Map = new Map
-                {
-                    Lat = "50.23",
-                    Lng = "-2.255",
-                    Street = "street, place, 1234"
-                },
                 Reporter = new ContactDetails
                 {
                     FirstName = "firstName",
                     LastName = "lastName",
                     EmailAddress = "test@test.com",
-                    PhoneNumber = "01222333333"
+                    PhoneNumber = "01222333333",
+                    Address = new Address
+                    {
+                        PlaceRef = "123",
+                        SelectedAddress = "TestAddress"
+                    }
                 },
                 TellUsABoutTheFlood = "it is a flood",
-                WhatDoYouWantToReport = "a flood",
+                WhatDoYouWantToReport = "flood",
                 WhereIsTheFlood = "home",
+                WhereInThePropertyIsTheFlood = "garage",
+                IsTheGarageConnectedToYourHome = "yes",
                 WhereIsTheFloodingComingFrom = "river"
             };
 
@@ -185,10 +216,10 @@ namespace flooding_service_tests.Services
             await _floodingService.CreateCase(floodingRequest);
 
             // Assert
-            _mockStreetHelper.Verify(_ => _.GetStreetUniqueId(It.IsAny<Map>()), Times.Never);
+            _mockStreetHelper.Verify(_ => _.GetStreetDetails(It.IsAny<Address>()), Times.Once);
         }
 
-        [Fact(Skip = "use httpClient for debugging")]
+        [Fact]
         public async Task CreateCase_ShouldCallVerintServiceGateway()
         {
             // Act
@@ -198,7 +229,7 @@ namespace flooding_service_tests.Services
             _mockVerintServiceGateway.Verify(_ => _.CreateVerintOnlineFormCase(It.IsAny<VerintOnlineFormRequest>()), Times.Once);
         }
 
-        [Fact(Skip = "use httpClient for debugging")]
+        [Fact]
         public async Task CreateCase_ShouldCallMailingServiceGateway()
         {
             // Act
@@ -208,7 +239,7 @@ namespace flooding_service_tests.Services
             _mockMailHelper.Verify(_ => _.SendEmail(It.IsAny<FloodingRequest>(), It.IsAny<string>()), Times.Once);
         }
 
-        [Fact(Skip = "use httpClient for debugging")]
+        [Fact]
         public async Task CreateCase_ShouldReturnResponseContent()
         {
             // Act
@@ -218,7 +249,7 @@ namespace flooding_service_tests.Services
             Assert.Contains("tes ref", result);
         }
 
-        [Fact(Skip = "use httpClient for debugging")]
+        [Fact]
         public async Task CreateCase_ShouldCallGatewayGetAsync_ConvertLatLngIfMapUsed()
         {
             // Act
@@ -228,8 +259,8 @@ namespace flooding_service_tests.Services
             _mockGateway.Verify(_ => _.GetAsync(It.IsAny<string>()), Times.Once);
             Assert.NotEqual("50.23", _floodingRequest.Map.Lat);
             Assert.NotEqual("-2.255", _floodingRequest.Map.Lng);
-            Assert.Equal("56789", _floodingRequest.Map.Lat);
-            Assert.Equal("123456", _floodingRequest.Map.Lng);
+            Assert.Equal("123456", _floodingRequest.Map.Lat);
+            Assert.Equal("56789", _floodingRequest.Map.Lng);
         }
     }
 }
