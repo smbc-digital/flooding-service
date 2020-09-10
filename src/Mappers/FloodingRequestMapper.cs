@@ -66,6 +66,8 @@ namespace flooding_service.Mappers
                         Reference = string.IsNullOrEmpty(streetResult.UniqueId) ? null : streetResult.UniqueId
                     };
                 }
+
+                crmCase.FurtherLocationInformation = floodingRequest.WhereIsTheFlood;
             }
 
             return crmCase;
