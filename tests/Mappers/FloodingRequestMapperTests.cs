@@ -13,6 +13,9 @@ namespace flooding_service_tests.Mappers
         private readonly FloodingConfiguration _floodingPavementConfiguration;
         private readonly FloodingConfiguration _floodingHomeConfiguration;
         private readonly FloodingConfiguration _floodingRoadConfiguration;
+        private readonly Config _roadFloodingLocationConfiguration;
+        private readonly Config _pavementFloodingLocationConfiguration;
+
 
         public FloodingRequestMapperTests()
         {
@@ -47,6 +50,18 @@ namespace flooding_service_tests.Mappers
                     Type = "home",
                     EventCode = 2009484
                 }
+            };
+
+            _roadFloodingLocationConfiguration = new Config
+            {
+                Type = "road",
+                Value = "Road"
+            };
+
+            _pavementFloodingLocationConfiguration = new Config
+            {
+                Type = "pavement",
+                Value = "Pavement"
             };
         }
 
@@ -95,7 +110,7 @@ namespace flooding_service_tests.Mappers
                 "Where is the flood coming from: river\r\nWhere is the flood: On a pavement\r\nBlocking the pavement: yes\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
 
             // Act
-            var result = request.ToCase(_floodingPavementConfiguration, streetResult);
+            var result = request.ToCase(_floodingPavementConfiguration, streetResult,_pavementFloodingLocationConfiguration);
 
             // Assert
             Assert.Equal(2002592, result.EventCode);
@@ -143,7 +158,7 @@ namespace flooding_service_tests.Mappers
                 "Where is the flood coming from: river\r\nWhere is the flood: In a home\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
 
             // Act
-            var result = request.ToCase(_floodingHomeConfiguration, streetResult);
+            var result = request.ToCase(_floodingHomeConfiguration, streetResult, null);
 
             // Assert
             Assert.Equal(2009484, result.EventCode);
@@ -192,7 +207,7 @@ namespace flooding_service_tests.Mappers
                 "Where is the flood coming from: river\r\nWhere is the flood: On a road\r\nBlocking the road: no\r\nTell us about the flood: It's a flood\r\nHow would you like to be contacted: phone\r\n";
 
             // Act
-            var result = request.ToCase(_floodingRoadConfiguration, streetResult);
+            var result = request.ToCase(_floodingRoadConfiguration, streetResult, _roadFloodingLocationConfiguration);
 
             // Assert
             Assert.Equal(2002695, result.EventCode);

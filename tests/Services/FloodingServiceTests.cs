@@ -99,6 +99,15 @@ namespace flooding_service_tests.Services
                 .SetupGet(_ => _.Value)
                 .Returns(new VerintOptions
                 {
+                    FloodingLocations = new List<Config>
+                    {
+                      new Config
+                      {
+                          Type = "pavement",
+                          Value = "Pavement"
+                      }
+                    },
+
                     Options = new List<Option>
                     {
                         new Option

@@ -15,7 +15,9 @@ namespace flooding_service.Mappers
         public static Case ToCase(
             this FloodingRequest floodingRequest, 
            FloodingConfiguration floodingConfiguration, 
-            AddressSearchResult streetResult)
+            AddressSearchResult streetResult,
+            Config floodingLocationConfig
+            )
         {
             var crmCase = new Case
             {
@@ -67,7 +69,7 @@ namespace flooding_service.Mappers
                     };
                 }
 
-                crmCase.FurtherLocationInformation = floodingRequest.WhereIsTheFlood;
+                crmCase.FurtherLocationInformation = floodingLocationConfig.Value;
             }
 
             return crmCase;
