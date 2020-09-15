@@ -75,7 +75,7 @@ namespace flooding_service.Helpers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"MailHelper:: SendMail:: Email failed to send with exception: {ex.Message}");
+                    throw ex;
                 }
             }
         }

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
 using flooding_service.Helpers;
-using Microsoft.Extensions.Logging;
 using Moq;
 using StockportGovUK.NetStandard.Gateways.Response;
 using StockportGovUK.NetStandard.Gateways.VerintService;
@@ -15,14 +14,13 @@ namespace flooding_service_tests.Helpers
     {
         private readonly IStreetHelper _streetHelper;
         private readonly Mock<IVerintServiceGateway> _mockVerintGateway = new Mock<IVerintServiceGateway>();
-        private readonly Mock<ILogger<StreetHelper>> _mockLogger = new Mock<ILogger<StreetHelper>>();
 
         private readonly string _street = "Street";
         private readonly string _usrn = "123456";
 
         public StreetHelperTests()
         {
-            _streetHelper = new StreetHelper(_mockVerintGateway.Object, _mockLogger.Object);
+            _streetHelper = new StreetHelper(_mockVerintGateway.Object);
         }
 
         [Fact]

@@ -95,7 +95,7 @@ namespace flooding_service.Services
             catch (Exception ex)
             {
                 _logger.LogWarning($"FloodingService:: ConvertLatLng:: Error message: {ex.Message}");
-                throw new Exception();
+                throw ex;
             }
         }
     }

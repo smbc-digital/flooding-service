@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
-using Microsoft.Extensions.Logging;
 using StockportGovUK.NetStandard.Gateways.VerintService;
 using StockportGovUK.NetStandard.Models.Addresses;
 
@@ -17,12 +16,10 @@ namespace flooding_service.Helpers
     public class StreetHelper : IStreetHelper
     {
         private readonly IVerintServiceGateway _verintServiceGateway;
-        private readonly ILogger<StreetHelper> _logger;
 
-        public StreetHelper(IVerintServiceGateway verintServiceGateway, ILogger<StreetHelper> logger)
+        public StreetHelper(IVerintServiceGateway verintServiceGateway)
         {
             _verintServiceGateway = verintServiceGateway;
-            _logger = logger;
         }
 
         public async Task<AddressSearchResult> GetStreetUniqueId(Map map)
@@ -34,7 +31,6 @@ namespace flooding_service.Helpers
             if (streetResponse?.ResponseContent != null)
                 return streetResponse.ResponseContent.FirstOrDefault();
 
-            _logger.LogWarning($"StreetHelper:: GetStreetUniqueId:: No street found with USRN: {streetUsrn}, returned status code: {streetResponse.StatusCode}");
             return new AddressSearchResult
             {
                 USRN = streetUsrn,
@@ -52,7 +48,6 @@ namespace flooding_service.Helpers
                 return streetResponse.ResponseContent.FirstOrDefault();
             }
 
-            _logger.LogWarning($"StreetHelper:: GetStreetDetails:: No address found with UPRN: {address.PlaceRef}, returned status code: {addressResponse.StatusCode}");
             return new AddressSearchResult
             {
                 Name = address.SelectedAddress,
