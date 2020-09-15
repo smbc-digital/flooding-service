@@ -84,6 +84,7 @@ namespace flooding_service.Services
             {
                 var result = await _gateway.GetAsync($"CoordConvert_LL_BNG.cfc?method=LatLongToBNG&lat={map.Lat}&lon={map.Lng}");
                 _logger.LogWarning($"FloodingService:: ConvertLatLng:: Response is: {JsonConvert.SerializeObject(result)}");
+                _logger.LogWarning($"FloodingService:: ConvertLatLng:: Content is: {JsonConvert.SerializeObject(result.Content.ReadAsStringAsync())}");
 
                 var response = JsonConvert.DeserializeObject<MapResponse>(await result.Content.ReadAsStringAsync());
 
