@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
 using flooding_service.Helpers;
@@ -82,21 +81,22 @@ namespace flooding_service.Services
         {
             try
             {
-                var result = await _gateway.GetAsync($"CoordConvert_LL_BNG.cfc?method=LatLongToBNG&lat={map.Lat}&lon={map.Lng}");
-                _logger.LogWarning($"FloodingService:: ConvertLatLng:: Response is: {JsonConvert.SerializeObject(result)}");
-                _logger.LogWarning($"FloodingService:: ConvertLatLng:: Content is: {JsonConvert.SerializeObject(result.Content.ReadAsStringAsync())}");
+                var result = await _gateway.GetAsync($"wfs?&service=wfs&version=1.0.0&request=getfeature&typename=flooding:vw_click_reproject&viewparams=long:{map.Lng};lat:{map.Lat};&outputformat=json&click_reproject_4326_osgb");
 
                 var response = JsonConvert.DeserializeObject<MapResponse>(await result.Content.ReadAsStringAsync());
+                var coordinates = response.features.First();
 
-                map.Lat = response.Northing;
-                map.Lng = response.Easting;
+                if (coordinates == null)
+                    throw new Exception("FloodingService:: ConvertLatLng:: No features found in response");
+
+                map.Lng = coordinates.properties.click_reproject_4326_osgb.Split(',')[0];
+                map.Lat = coordinates.properties.click_reproject_4326_osgb.Split(',')[1];
 
                 return map;
             }
             catch (Exception ex)
             {
-                _logger.LogWarning($"FloodingService:: ConvertLatLng:: Error message: {ex.Message}");
-                throw ex;
+                throw new Exception($"FloodingService:: ConvertLatLng:: Error message: {ex.Message}", ex);
             }
         }
     }

@@ -161,8 +161,13 @@ namespace flooding_service_tests.Services
 
             var mapResponse = new MapResponse
             {
-                Easting = "56789",
-                Northing = "123456"
+                features = new List<Feature> {
+                    new Feature {
+                        properties = new Properties {
+                            click_reproject_4326_osgb = "56789,123456"
+                        }
+                    }
+                }
             };
 
             _mockGateway
