@@ -4,7 +4,6 @@ using flooding_service.Constants;
 using flooding_service.Controllers.Models;
 using flooding_service.Extensions;
 using flooding_service.Models;
-using StockportGovUK.NetStandard.Models.Addresses;
 using StockportGovUK.NetStandard.Models.Verint;
 using Street = StockportGovUK.NetStandard.Models.Verint.Street;
 
@@ -14,10 +13,10 @@ namespace flooding_service.Mappers
     {
         public static Case ToCase(
             this FloodingRequest floodingRequest, 
-           FloodingConfiguration floodingConfiguration, 
-            AddressSearchResult streetResult,
+            FloodingConfiguration floodingConfiguration, 
+            FloodingAddress streetResult,
             Config floodingLocationConfig
-            )
+        )
         {
             var crmCase = new Case
             {

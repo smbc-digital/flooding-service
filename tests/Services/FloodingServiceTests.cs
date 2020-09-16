@@ -143,7 +143,7 @@ namespace flooding_service_tests.Services
 
             _mockStreetHelper
                 .Setup(_ => _.GetStreetUniqueId(It.IsAny<Map>()))
-                .ReturnsAsync(new AddressSearchResult
+                .ReturnsAsync(new FloodingAddress
                 {
                     UniqueId = "123456",
                     USRN = "654321",
@@ -152,11 +152,13 @@ namespace flooding_service_tests.Services
 
             _mockStreetHelper
                 .Setup(_ => _.GetStreetDetails(It.IsAny<Address>()))
-                .ReturnsAsync(new AddressSearchResult
+                .ReturnsAsync(new FloodingAddress
                 {
                     UniqueId = "123456",
                     USRN = "654321",
-                    Name = "TestName"
+                    Name = "TestName",
+                    Easting = "123456",
+                    Northing = "098765"
                 });
 
             var mapResponse = new MapResponse
@@ -164,7 +166,7 @@ namespace flooding_service_tests.Services
                 features = new List<Feature> {
                     new Feature {
                         properties = new Properties {
-                            click_reproject_4326_osgb = "56789,123456"
+                            EastingNorthing = "56789,123456"
                         }
                     }
                 }
