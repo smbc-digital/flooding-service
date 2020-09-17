@@ -20,32 +20,32 @@ namespace flooding_service_tests.Controllers
             _homeController = new HomeController(_mockFloodingService.Object, _mockLogger.Object);
         }
         
-        // [Fact]
-        // public async Task Post_ShouldReturnOK()
-        // {
-        //     // Arrange
-        //     _mockFloodingService
-        //         .Setup(_ => _.CreateCase(It.IsAny<FloodingRequest>()))
-        //         .ReturnsAsync("test ref");
+        [Fact]
+        public async Task Post_ShouldReturnOK()
+        {
+            // Arrange
+            _mockFloodingService
+                .Setup(_ => _.CreateCase(It.IsAny<FloodingRequest>()))
+                .ReturnsAsync("test ref");
 
-        //     // Act
-        //     var response = await _homeController.Post(new FloodingRequest());
-        //     var statusResponse = response as OkObjectResult;
+            // Act
+            var response = await _homeController.Post(new FloodingRequest());
+            var statusResponse = response as OkObjectResult;
             
-        //     // Assert
-        //     Assert.NotNull(statusResponse);
-        //     Assert.Equal(200, statusResponse.StatusCode);
-        // }
+            // Assert
+            Assert.NotNull(statusResponse);
+            Assert.Equal(200, statusResponse.StatusCode);
+        }
 
-        // [Fact]
-        // public async Task Post_ShouldCreateCase()
-        // {
-        //     // Act
-        //     await _homeController.Post(new FloodingRequest());
+        [Fact]
+        public async Task Post_ShouldCreateCase()
+        {
+            // Act
+            await _homeController.Post(new FloodingRequest());
 
-        //     // Assert
-        //     _mockFloodingService.Verify(_ => _.CreateCase(It.IsAny<FloodingRequest>()), Times.Once);
-        // }
+            // Assert
+            _mockFloodingService.Verify(_ => _.CreateCase(It.IsAny<FloodingRequest>()), Times.Once);
+        }
 
 
         [Fact]

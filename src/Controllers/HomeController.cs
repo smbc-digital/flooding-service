@@ -29,7 +29,6 @@ namespace flooding_service.Controllers
         {
             try
             {
-                _logger.LogWarning($"DEBUG:: {JsonConvert.SerializeObject(model)}");
                 var result = await _floodingService.CreateCase(model);
                 return Ok(result);
             }
