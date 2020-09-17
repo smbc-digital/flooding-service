@@ -52,8 +52,8 @@ namespace flooding_service.Mappers
                 }
             }
 
-            formOptions.XCoordinate = request.Map?.Lng;
-            formOptions.YCoordinate = request.Map?.Lat;
+            formOptions.XCoordinate = request.Map.Lng;
+            formOptions.YCoordinate = request.Map.Lat;
 
             return new FloodingConfiguration
             {

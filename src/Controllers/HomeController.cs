@@ -4,6 +4,7 @@ using flooding_service.Controllers.Models;
 using flooding_service.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using StockportGovUK.AspNetCore.Attributes.TokenAuthentication;
 
 namespace flooding_service.Controllers
@@ -28,6 +29,7 @@ namespace flooding_service.Controllers
         {
             try
             {
+                _logger.LogWarning($"DEBUG:: {JsonConvert.SerializeObject(model)}");
                 var result = await _floodingService.CreateCase(model);
                 return Ok(result);
             }
