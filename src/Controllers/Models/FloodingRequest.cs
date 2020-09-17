@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using StockportGovUK.NetStandard.Models.ContactDetails;
 
 namespace flooding_service.Controllers.Models
@@ -30,23 +30,15 @@ namespace flooding_service.Controllers.Models
     }
 
     public class Properties    {
-        public string click_reproject_4326_osgb { get; set; } 
+        [JsonProperty("click_reproject_4326_osgb")]
+        public string EastingNorthing { get; set; } 
     }
 
     public class Feature    {
-        public string type { get; set; } 
-        public string id { get; set; } 
-        public object geometry { get; set; } 
         public Properties properties { get; set; } 
     }
 
     public class MapResponse    {
-        public string type { get; set; } 
         public List<Feature> features { get; set; } 
-        public int totalFeatures { get; set; } 
-        public int numberMatched { get; set; } 
-        public int numberReturned { get; set; } 
-        public DateTime timeStamp { get; set; } 
-        public object crs { get; set; } 
     }
 }

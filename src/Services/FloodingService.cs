@@ -55,7 +55,16 @@ namespace flooding_service.Services
                     : await _streetHelper.GetStreetUniqueId(request.Map);
 
                 if (!request.DidNotUseMap)
-                   request.Map = await ConvertLatLng(request.Map);
+                {
+                    request.Map = await ConvertLatLng(request.Map);
+                }
+                else
+                {
+                    request.Map = new Map {
+                        Lng = streetResult.Northing,
+                        Lat = streetResult.Easting
+                    };
+                }
 
                 var floodingLocationConfig = 
                     string.IsNullOrEmpty(request.WhereIsTheFlood) ? 
@@ -89,8 +98,8 @@ namespace flooding_service.Services
                 if (coordinates == null)
                     throw new Exception("FloodingService:: ConvertLatLng:: No features found in response");
 
-                map.Lng = coordinates.properties.click_reproject_4326_osgb.Split(',')[0];
-                map.Lat = coordinates.properties.click_reproject_4326_osgb.Split(',')[1];
+                map.Lng = coordinates.properties.EastingNorthing.Split(',')[0];
+                map.Lat = coordinates.properties.EastingNorthing.Split(',')[1];
 
                 return map;
             }

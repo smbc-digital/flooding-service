@@ -92,7 +92,7 @@ namespace flooding_service_tests.Mappers
                 TellUsABoutTheFlood = "It's a flood"
             };
 
-            var streetResult = new AddressSearchResult
+            var streetResult = new FloodingAddress
             {
                 UniqueId = "654321",
                 USRN = "123456",
@@ -137,7 +137,7 @@ namespace flooding_service_tests.Mappers
                     LastName = "LastName",
                     PhoneNumber = "PhoneNumber",
                     EmailAddress = "EmailAddress",
-                    Address = new Address
+                    Address = new StockportGovUK.NetStandard.Models.Addresses.Address
                     {
                         PlaceRef = "123456",
                         SelectedAddress = "SelectedAddress"
@@ -147,7 +147,7 @@ namespace flooding_service_tests.Mappers
                 TellUsABoutTheFlood = "It's a flood"
             };
 
-            var streetResult = new AddressSearchResult
+            var streetResult = new FloodingAddress
             {
                 USRN = "123456",
                 UniqueId = "reference",
@@ -196,7 +196,7 @@ namespace flooding_service_tests.Mappers
                 TellUsABoutTheFlood = "It's a flood"
             };
 
-            var streetResult = new AddressSearchResult
+            var streetResult = new FloodingAddress
             {
                 UniqueId = "654321",
                 USRN = "123456",

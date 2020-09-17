@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using flooding_service.Controllers.Models;
+using flooding_service.Models;
 using StockportGovUK.NetStandard.Gateways.VerintService;
 using StockportGovUK.NetStandard.Models.Addresses;
 
@@ -8,9 +9,9 @@ namespace flooding_service.Helpers
 {
     public interface IStreetHelper
     {
-        Task<AddressSearchResult> GetStreetUniqueId(Map map);
+        Task<FloodingAddress> GetStreetUniqueId(Map map);
 
-        Task<AddressSearchResult> GetStreetDetails(Address address);
+        Task<FloodingAddress> GetStreetDetails(StockportGovUK.NetStandard.Models.Addresses.Address address);
     }
 
     public class StreetHelper : IStreetHelper
@@ -22,33 +23,50 @@ namespace flooding_service.Helpers
             _verintServiceGateway = verintServiceGateway;
         }
 
-        public async Task<AddressSearchResult> GetStreetUniqueId(Map map)
+        public async Task<FloodingAddress> GetStreetUniqueId(Map map)
         {
             var streetDescription = map.Street.Split(',').ToList().SkipLast(1).Aggregate("", (x, y) => x + y + ',').Trim(',');
             var streetUsrn = map.Street.Split(',').ToList().Last().Trim();
             var streetResponse = await _verintServiceGateway.GetStreetByUsrn(streetUsrn);
 
             if (streetResponse?.ResponseContent != null)
-                return streetResponse.ResponseContent.FirstOrDefault();
+            {
+                var response = streetResponse.ResponseContent.FirstOrDefault();
 
-            return new AddressSearchResult
+                return new FloodingAddress
+                {
+                    Name = response.Name,
+                    USRN = response.USRN,
+                    UniqueId = response.UniqueId
+                };
+            }
+
+            return new FloodingAddress
             {
                 USRN = streetUsrn,
                 Name = streetDescription
             };
         }
 
-        public async Task<AddressSearchResult> GetStreetDetails(Address address)
+        public async Task<FloodingAddress> GetStreetDetails(Address address)
         {
             var addressResponse = await _verintServiceGateway.GetPropertyByUprn(address.PlaceRef);
 
             if (addressResponse?.ResponseContent != null){
                 var streetResponse = await _verintServiceGateway.GetStreetByUsrn(addressResponse.ResponseContent.USRN);
+                var response = streetResponse.ResponseContent.FirstOrDefault();
 
-                return streetResponse.ResponseContent.FirstOrDefault();
+                return new FloodingAddress
+                {
+                    Name = response.Name,
+                    USRN = response.USRN,
+                    UniqueId = response.UniqueId,
+                    Easting = addressResponse.ResponseContent.Easting,
+                    Northing = addressResponse.ResponseContent.Northing
+                };
             }
 
-            return new AddressSearchResult
+            return new FloodingAddress
             {
                 Name = address.SelectedAddress,
                 USRN = address.PlaceRef
