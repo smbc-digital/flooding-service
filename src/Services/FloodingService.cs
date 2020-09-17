@@ -61,8 +61,8 @@ namespace flooding_service.Services
                 else
                 {
                     request.Map = new Map {
-                        Lng = streetResult.Northing,
-                        Lat = streetResult.Easting
+                        Lng = streetResult.Easting,
+                        Lat = streetResult.Northing
                     };
                 }
 
