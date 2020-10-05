@@ -66,7 +66,7 @@ namespace flooding_service.Helpers
                     {
                         Payload = JsonConvert.SerializeObject(new
                         {
-                            Subject = "Report a flood - submission",
+                            Subject = template.Equals(EMailTemplate.ReportAFloodHighWaterLevels) ? "Thanks for reporting high water levels on a river or stream" : "Thanks for reporting a flood",
                             Reference = caseReference,
                             RecipientAddress = floodingRequest.Reporter.EmailAddress
                         }),
