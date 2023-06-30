@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using flooding_service.Controllers.Models;
+﻿using flooding_service.Controllers.Models;
 using flooding_service.Helpers;
 using Moq;
+using StockportGovUK.NetStandard.Gateways.Models.Addresses;
 using StockportGovUK.NetStandard.Gateways.Response;
 using StockportGovUK.NetStandard.Gateways.VerintService;
-using StockportGovUK.NetStandard.Models.Addresses;
 using Xunit;
 
 namespace flooding_service_tests.Helpers

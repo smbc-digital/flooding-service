@@ -1,12 +1,11 @@
-﻿using System.Threading.Tasks;
-using flooding_service.Controllers.Models;
+﻿using flooding_service.Controllers.Models;
 using flooding_service.Helpers;
 using Microsoft.Extensions.Logging;
 using Moq;
+using StockportGovUK.NetStandard.Gateways.Enums;
 using StockportGovUK.NetStandard.Gateways.MailingService;
-using StockportGovUK.NetStandard.Models.ContactDetails;
-using StockportGovUK.NetStandard.Models.Enums;
-using StockportGovUK.NetStandard.Models.Mail;
+using StockportGovUK.NetStandard.Gateways.Models.ContactDetails;
+using StockportGovUK.NetStandard.Gateways.Models.Mail;
 using Xunit;
 
 namespace flooding_service_tests.Helpers

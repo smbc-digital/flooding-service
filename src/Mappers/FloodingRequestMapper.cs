@@ -1,11 +1,10 @@
-using System;
 using System.Text;
 using flooding_service.Constants;
 using flooding_service.Controllers.Models;
 using flooding_service.Extensions;
 using flooding_service.Models;
-using StockportGovUK.NetStandard.Models.Verint;
-using Street = StockportGovUK.NetStandard.Models.Verint.Street;
+using StockportGovUK.NetStandard.Gateways.Models.Verint;
+using Street = StockportGovUK.NetStandard.Gateways.Models.Verint.Street;
 
 namespace flooding_service.Mappers
 {
