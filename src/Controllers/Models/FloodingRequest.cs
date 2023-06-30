@@ -1,6 +1,5 @@
-using System.Collections.Generic;
 using Newtonsoft.Json;
-using StockportGovUK.NetStandard.Models.ContactDetails;
+using StockportGovUK.NetStandard.Gateways.Models.ContactDetails;
 
 namespace flooding_service.Controllers.Models
 {

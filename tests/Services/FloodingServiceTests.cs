@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Net;
 using flooding_service.Controllers.Models;
 using flooding_service.Helpers;
 using flooding_service.Models;
@@ -11,11 +8,11 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Newtonsoft.Json;
 using StockportGovUK.NetStandard.Gateways;
+using StockportGovUK.NetStandard.Gateways.Models.Addresses;
+using StockportGovUK.NetStandard.Gateways.Models.ContactDetails;
+using StockportGovUK.NetStandard.Gateways.Models.Verint.VerintOnlineForm;
 using StockportGovUK.NetStandard.Gateways.Response;
 using StockportGovUK.NetStandard.Gateways.VerintService;
-using StockportGovUK.NetStandard.Models.Addresses;
-using StockportGovUK.NetStandard.Models.ContactDetails;
-using StockportGovUK.NetStandard.Models.Models.Verint.VerintOnlineForm;
 using Xunit;
 
 namespace flooding_service_tests.Services
@@ -28,7 +25,7 @@ namespace flooding_service_tests.Services
         private readonly Mock<IStreetHelper> _mockStreetHelper = new Mock<IStreetHelper>();
         private readonly Mock<IGateway> _mockGateway = new Mock<IGateway>();
         private readonly Mock<ILogger<FloodingService>> _mockLogger = new Mock<ILogger<FloodingService>>();
-        private FloodingRequest _floodingRequest = new FloodingRequest
+        private readonly FloodingRequest _floodingRequest = new FloodingRequest
         {
             HowWouldYouLikeToBeContacted = "phone",
             IsTheFloodingBlockingTheWholePavementOrCausing = "yes",

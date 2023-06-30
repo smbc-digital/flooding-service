@@ -1,9 +1,7 @@
 ﻿using flooding_service.Controllers.Models;
 using flooding_service.Mappers;
 using flooding_service.Models;
-using Moq;
-using StockportGovUK.NetStandard.Models.Addresses;
-using StockportGovUK.NetStandard.Models.ContactDetails;
+using StockportGovUK.NetStandard.Gateways.Models.ContactDetails;
 using Xunit;
 
 namespace flooding_service_tests.Mappers
@@ -99,7 +97,7 @@ namespace flooding_service_tests.Mappers
                 Name = "street, place"
             };
 
-            var addressResult = new StockportGovUK.NetStandard.Models.Verint.Address
+            var addressResult = new StockportGovUK.NetStandard.Gateways.Models.Verint.Address
             {
                 USRN = "123456",
                 Reference = "reference",
@@ -137,7 +135,7 @@ namespace flooding_service_tests.Mappers
                     LastName = "LastName",
                     PhoneNumber = "PhoneNumber",
                     EmailAddress = "EmailAddress",
-                    Address = new StockportGovUK.NetStandard.Models.Addresses.Address
+                    Address = new StockportGovUK.NetStandard.Gateways.Models.Addresses.Address
                     {
                         PlaceRef = "123456",
                         SelectedAddress = "SelectedAddress"

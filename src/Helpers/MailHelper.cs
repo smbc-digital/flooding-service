@@ -1,10 +1,8 @@
-﻿using System;
-using flooding_service.Controllers.Models;
-using Microsoft.Extensions.Logging;
+﻿using flooding_service.Controllers.Models;
 using Newtonsoft.Json;
+using StockportGovUK.NetStandard.Gateways.Enums;
 using StockportGovUK.NetStandard.Gateways.MailingService;
-using StockportGovUK.NetStandard.Models.Enums;
-using StockportGovUK.NetStandard.Models.Mail;
+using StockportGovUK.NetStandard.Gateways.Models.Mail;
 
 namespace flooding_service.Helpers
 {

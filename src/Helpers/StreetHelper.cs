@@ -1,9 +1,7 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using flooding_service.Controllers.Models;
+﻿using flooding_service.Controllers.Models;
 using flooding_service.Models;
+using StockportGovUK.NetStandard.Gateways.Models.Addresses;
 using StockportGovUK.NetStandard.Gateways.VerintService;
-using StockportGovUK.NetStandard.Models.Addresses;
 
 namespace flooding_service.Helpers
 {
@@ -11,7 +9,7 @@ namespace flooding_service.Helpers
     {
         Task<FloodingAddress> GetStreetUniqueId(Map map);
 
-        Task<FloodingAddress> GetStreetDetails(StockportGovUK.NetStandard.Models.Addresses.Address address);
+        Task<FloodingAddress> GetStreetDetails(Address address);
     }
 
     public class StreetHelper : IStreetHelper
